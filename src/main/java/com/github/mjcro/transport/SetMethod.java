@@ -13,4 +13,24 @@ class SetMethod implements Option {
     public void accept(Context context) {
         context.method = value;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SetMethod setMethod = (SetMethod) o;
+        return value.equals(setMethod.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return "SetMethod{" +
+                "value='" + value + '\'' +
+                '}';
+    }
 }
