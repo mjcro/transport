@@ -8,5 +8,5 @@ public interface Transport {
      * @param options Request options.
      * @return Response object.
      */
-    Envelope call(Envelope request, Option... options);
+    Response call(Request request, Option... options);
 }

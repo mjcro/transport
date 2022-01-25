@@ -10,5 +10,5 @@ public interface AsyncTransport {
      * @param options Additional request options, optional.
      * @return Future response.
      */
-    CompletableFuture<Envelope> callAsync(Envelope request, Option... options);
+    CompletableFuture<Response> callAsync(Request request, Option... options);
 }
