@@ -1,5 +1,6 @@
 package com.github.mjcro.transport;
 
+import java.time.Duration;
 import java.util.function.Consumer;
 
 /**
@@ -61,5 +62,13 @@ public interface Option extends Consumer<Context> {
      */
     static Option httpPost() {
         return httpMethod("POST");
+    }
+
+    /**
+     * @param value Timeout value.
+     * @return Option setting HTTP POST method.
+     */
+    static Option timeout(final Duration value) {
+        return new SetTimeout(value);
     }
 }
