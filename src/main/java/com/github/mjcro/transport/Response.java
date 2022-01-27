@@ -4,6 +4,11 @@ import com.github.mjcro.references.time.ElapsedReference;
 
 public interface Response extends Envelope, ElapsedReference {
     /**
+     * @return Address, URL in most cases.
+     */
+    String getAddress();
+
+    /**
      * @return Response HTTP code.
      */
     int getCode();
