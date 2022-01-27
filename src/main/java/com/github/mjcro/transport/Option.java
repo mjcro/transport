@@ -43,6 +43,31 @@ public interface Option extends Consumer<Context> {
     }
 
     /**
+     * Appends one or more options to exising options array.
+     *
+     * @param options Existing options array.
+     * @param append  Options to append.
+     * @return Resulting options array.
+     */
+    static Option[] append(Option[] options, Option... append) {
+        if (append == null || append.length == 0) {
+            // Nothing to append
+            return options == null
+                    ? new Option[0]
+                    : options;
+        }
+        if (options == null || options.length == 0) {
+            // No previously set options
+            return append;
+        }
+
+        Option[] result = new Option[options.length + append.length];
+        System.arraycopy(options, 0, result, 0, options.length);
+        System.arraycopy(append, 0, result, options.length, append.length);
+        return result;
+    }
+
+    /**
      * @param value HTTP method.
      * @return Option setting HTTP method.
      */
