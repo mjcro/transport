@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class ResponseImpl extends EnvelopeImpl implements Response {
+class ResponseImpl extends EnvelopeImpl implements Response {
     private final String address;
     private final int code;
     private final Duration elapsed;
 
-    ResponseImpl(Map<String, String> headers, Map<String, List<String>> full, String address, byte[] body, int code, Duration elapsed) {
-        super(headers, full, body);
+    ResponseImpl(Map<String, List<String>> headers, String address, byte[] body, int code, Duration elapsed) {
+        super(headers, body);
         this.code = code;
         this.elapsed = Objects.requireNonNull(elapsed, "elapsed");
         this.address = Objects.requireNonNull(address, "address");

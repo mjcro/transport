@@ -8,8 +8,8 @@ class RequestImpl extends EnvelopeImpl implements Request {
     private final String address;
     private final Option[] options;
 
-    RequestImpl(Map<String, String> headers, Map<String, List<String>> full, String address, byte[] body, Option[] options) {
-        super(headers, full, body);
+    RequestImpl(Map<String, List<String>> headers, String address, byte[] body, Option[] options) {
+        super(headers, body);
         this.address = Objects.requireNonNull(address, "address");
         this.options = options == null ? new Option[0] : options;
     }
