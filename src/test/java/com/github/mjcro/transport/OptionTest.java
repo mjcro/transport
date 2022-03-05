@@ -1,5 +1,6 @@
 package com.github.mjcro.transport;
 
+import com.github.mjcro.transport.options.Option;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

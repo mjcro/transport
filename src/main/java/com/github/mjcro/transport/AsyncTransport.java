@@ -1,8 +1,10 @@
 package com.github.mjcro.transport;
 
+import com.github.mjcro.transport.options.Option;
+
 import java.util.concurrent.CompletableFuture;
 
-public interface AsyncTransport {
+public interface AsyncTransport extends TransportSupport {
     /**
      * Perform synchronous call.
      *

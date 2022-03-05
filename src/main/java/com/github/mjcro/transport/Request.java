@@ -1,5 +1,7 @@
 package com.github.mjcro.transport;
 
+import com.github.mjcro.transport.options.Option;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;

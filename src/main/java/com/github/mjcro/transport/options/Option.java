@@ -1,6 +1,8 @@
-package com.github.mjcro.transport;
+package com.github.mjcro.transport.options;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -93,7 +95,74 @@ public interface Option extends Consumer<Context> {
      * @param value Timeout value.
      * @return Option setting HTTP POST method.
      */
-    static Option timeout(final Duration value) {
+    static Option timeout(Duration value) {
         return new SetTimeout(value);
+    }
+
+    /**
+     * @param name   Header name.
+     * @param values Header values.
+     * @return Option setting header.
+     */
+    static Option header(String name, String... values) {
+        if (values != null && values.length > 0) {
+            return header(name, Arrays.asList(values));
+        } else {
+            return new VoidOption();
+        }
+    }
+
+    /**
+     * @param name   Header name.
+     * @param values Header values.
+     * @return Option setting header.
+     */
+    static Option header(String name, List<String> values) {
+        return new SetHeader(name, values);
+    }
+
+    /**
+     * @param value True to enable HTTP/2
+     * @return Option setting HTTP/2 mode.
+     */
+    static Option http2(boolean value) {
+        return new SetHTTP2(value);
+    }
+
+    /**
+     * @return Option enabling HTTP/2 mode
+     */
+    static Option http2() {
+        return http2(true);
+    }
+
+    /**
+     * @param value True to enable redirects.
+     * @return Option setting redirects mode.
+     */
+    static Option allowRedirects(boolean value) {
+        return new SetAllowRedirects(value);
+    }
+
+    /**
+     * @return Option enabling redirects.
+     */
+    static Option allowRedirects() {
+        return allowRedirects(true);
+    }
+
+    /**
+     * @param value True to enable caching.
+     * @return Option setting caching mode.
+     */
+    static Option useCaching(boolean value) {
+        return new SetCaching(value);
+    }
+
+    /**
+     * @return Option enabling caching.
+     */
+    static Option useCaching() {
+        return useCaching(true);
     }
 }

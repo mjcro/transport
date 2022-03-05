@@ -1,5 +1,7 @@
 package com.github.mjcro.transport;
 
+import com.github.mjcro.transport.options.Option;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;

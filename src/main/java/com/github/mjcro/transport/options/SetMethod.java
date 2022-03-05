@@ -1,4 +1,4 @@
-package com.github.mjcro.transport;
+package com.github.mjcro.transport.options;
 
 import java.util.Objects;
 
