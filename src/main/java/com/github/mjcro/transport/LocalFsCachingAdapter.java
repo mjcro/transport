@@ -13,11 +13,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Transport adapter to cache remote response in local FS.
@@ -41,22 +44,28 @@ public class LocalFsCachingAdapter implements Transport {
     public Response call(Request request, final Option... options) {
         // Calculating cache key
         Context context = createContext(null, request, options);
-        String filename = filename(request, context);
 
-        if (filename != null) {
-            // Checking file presence
-            Response response = loadFile(filename);
-            if (response != null) {
-                return response;
+        try {
+            String filename = filename(request, context);
+            if (filename != null) {
+                // Checking file presence
+                Response response = loadFile(filename);
+                if (response != null) {
+                    return response;
+                }
             }
-        }
 
-        Response response = real.call(request, options);
-        if (filename != null && response != null) {
-            saveFile(filename, response);
+            Response response = real.call(request, options);
+            if (filename != null && response != null) {
+                saveFile(filename, response);
+            }
+            return response;
+        } catch (IOException | NoSuchAlgorithmException e) {
+            throw new RuntimeException(
+                    "Unable to perform cache operation",
+                    e
+            );
         }
-
-        return response;
     }
 
     /**
@@ -66,7 +75,7 @@ public class LocalFsCachingAdapter implements Transport {
      * @param context Transport context.
      * @return File name.
      */
-    String filename(final Request request, final Context context) {
+    String filename(final Request request, final Context context) throws NoSuchAlgorithmException {
         String address = context.formatURLString(request.getAddress());
         String prefix = address.trim().toLowerCase(Locale.ROOT);
         if (prefix.startsWith("https://")) {
@@ -152,10 +161,13 @@ public class LocalFsCachingAdapter implements Transport {
         }
 
         return Response.create(
-                code,
+                headers.entrySet().stream().collect(Collectors.toMap(
+                        $ -> $.getKey(),
+                        $ -> Collections.singletonList($.getValue())
+                )),
                 url,
-                headers,
                 body,
+                code,
                 Duration.ofNanos(elapsedNano)
         );
     }
@@ -195,7 +207,7 @@ public class LocalFsCachingAdapter implements Transport {
                 dos.writeLong(response.getElapsed().toNanos());
 
                 // Headers
-                Map<String, String> headers = response.getHeaders();
+                Map<String, String> headers = response.getFlatHeaders();
                 dos.writeInt(headers.size());
                 for (Map.Entry<String, String> entry : headers.entrySet()) {
                     byte[] key = entry.getKey().getBytes(StandardCharsets.UTF_8);
