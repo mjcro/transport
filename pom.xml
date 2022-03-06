@@ -28,11 +28,6 @@
             <version>1.0.3</version>
         </dependency>
         <dependency>
-            <groupId>com.github.mjcro</groupId>
-            <artifactId>telemetry</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>7.5</version>
