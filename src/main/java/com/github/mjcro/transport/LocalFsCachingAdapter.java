@@ -41,7 +41,7 @@ public class LocalFsCachingAdapter implements Transport {
     }
 
     @Override
-    public Response call(Request request, final Option... options) {
+    public Response call(Request request, Option... options) {
         // Calculating cache key
         Context context = createContext(null, request, options);
 
@@ -75,7 +75,7 @@ public class LocalFsCachingAdapter implements Transport {
      * @param context Transport context.
      * @return File name.
      */
-    String filename(final Request request, final Context context) throws NoSuchAlgorithmException {
+    String filename(Request request, Context context) throws NoSuchAlgorithmException {
         String address = context.formatURLString(request.getAddress());
         String prefix = address.trim().toLowerCase(Locale.ROOT);
         if (prefix.startsWith("https://")) {
@@ -102,7 +102,7 @@ public class LocalFsCachingAdapter implements Transport {
      * @return Response object.
      * @throws IOException On read error.
      */
-    Response loadFile(final String filename) throws IOException {
+    Response loadFile(String filename) throws IOException {
         Path path = Paths.get(this.path, filename);
         if (!Files.exists(path)) {
             // File not exists, nothing to read
@@ -179,7 +179,7 @@ public class LocalFsCachingAdapter implements Transport {
      * @param response Response to save.
      * @throws IOException On write error.
      */
-    void saveFile(final String filename, final Response response) throws IOException {
+    void saveFile(String filename, Response response) throws IOException {
         Path path = Paths.get(this.path, filename);
         if (Files.exists(path)) {
             if (!Files.isRegularFile(path)) {

@@ -93,13 +93,13 @@ public class Context {
         return headers;
     }
 
-    public String formatURLString(final String url) {
+    public String formatURLString(String url) {
         return urlPrefix != null && !urlPrefix.isEmpty()
                 ? urlPrefix + url
                 : url;
     }
 
-    public URI formatURI(final String uri) {
+    public URI formatURI(String uri) {
         return URI.create(formatURLString(uri));
     }
 }
