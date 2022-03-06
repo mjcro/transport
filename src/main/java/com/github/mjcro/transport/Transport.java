@@ -2,7 +2,7 @@ package com.github.mjcro.transport;
 
 import com.github.mjcro.transport.options.Option;
 
-public interface Transport extends TransportSupport {
+public interface Transport {
     /**
      * Performs call using this transport.
      *

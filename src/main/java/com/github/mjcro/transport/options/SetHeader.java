@@ -19,6 +19,6 @@ class SetHeader implements Option {
 
     @Override
     public void accept(Context context) {
-        context.setHeader(name, value);
+        context.headers.put(name, value);
     }
 }
