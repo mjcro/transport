@@ -42,8 +42,12 @@ public class LocalFsCachingAdapter implements Transport {
 
     @Override
     public Response call(Request request, Option... options) {
-        // Calculating cache key
         Context context = Context.create(null, request, options);
+
+        if (!context.isCacheEnabled()) {
+            // Cache bypass
+            return real.call(request, options);
+        }
 
         try {
             String filename = filename(request, context);

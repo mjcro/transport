@@ -1,5 +1,7 @@
 package com.github.mjcro.transport;
 
+import com.github.mjcro.transport.options.Option;
+
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -14,7 +16,7 @@ class MappedResponseAsyncCall<T> implements AsyncCall<T> {
     }
 
     @Override
-    public CompletableFuture<T> execute(AsyncTransport transport) {
-        return transport.callAsync(request).thenApplyAsync(mapper);
+    public CompletableFuture<T> execute(AsyncTransport transport, Option... options) {
+        return transport.callAsync(request, options).thenApplyAsync(mapper);
     }
 }

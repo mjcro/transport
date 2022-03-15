@@ -103,10 +103,24 @@ public class Context {
     }
 
     /**
+     * @return True if HTTP2 is enabled.
+     */
+    public boolean isHttp2() {
+        return http2;
+    }
+
+    /**
      * @return True if redirects are enabled.
      */
     public boolean isAllowRedirects() {
         return allowRedirects;
+    }
+
+    /**
+     * @return True if caching enabled, false otherwise.
+     */
+    public boolean isCacheEnabled() {
+        return useCache;
     }
 
     /**

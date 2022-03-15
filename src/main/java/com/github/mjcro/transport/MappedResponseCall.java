@@ -1,5 +1,7 @@
 package com.github.mjcro.transport;
 
+import com.github.mjcro.transport.options.Option;
+
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -13,7 +15,7 @@ class MappedResponseCall<T> implements Call<T> {
     }
 
     @Override
-    public T execute(Transport transport) {
-        return mapper.apply(transport.call(request));
+    public T execute(Transport transport, Option... options) {
+        return mapper.apply(transport.call(request, options));
     }
 }
