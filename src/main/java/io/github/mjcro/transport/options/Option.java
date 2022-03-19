@@ -122,6 +122,14 @@ public interface Option extends Consumer<Context> {
     }
 
     /**
+     * @param value User agent value.
+     * @return Option setting header.
+     */
+    static Option userAgent(String value) {
+        return header("User-Agent", value);
+    }
+
+    /**
      * @param value True to enable HTTP/2
      * @return Option setting HTTP/2 mode.
      */
