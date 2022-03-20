@@ -1,5 +1,8 @@
 package io.github.mjcro.transport.options;
 
+import io.github.mjcro.transport.AsyncTransport;
+import io.github.mjcro.transport.Transport;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -196,5 +199,45 @@ public interface Option extends Consumer<Context> {
      */
     static Option useCaching() {
         return useCaching(true);
+    }
+
+    /**
+     * Creates currying adapter that will inject provided options
+     * to all requests made using this transport.
+     *
+     * @param transport Transport to wrap.
+     * @param options   Options to append.
+     * @return Wrapped transport.
+     */
+    static Transport curry(Transport transport, Option... options) {
+        if (options == null || options.length == 0) {
+            return transport;
+        }
+        if (transport instanceof OptionCurryTransport) {
+            OptionCurryTransport oct = (OptionCurryTransport) transport;
+            return new OptionCurryTransport(oct.real, Option.merge(oct.options, options));
+        }
+
+        return new OptionCurryTransport(transport, options);
+    }
+
+    /**
+     * Creates currying adapter that will inject provided options
+     * to all requests made using this transport.
+     *
+     * @param transport Transport to wrap.
+     * @param options   Options to append.
+     * @return Wrapped transport.
+     */
+    static AsyncTransport curry(AsyncTransport transport, Option... options) {
+        if (options == null || options.length == 0) {
+            return transport;
+        }
+        if (transport instanceof OptionCurryAsyncTransport) {
+            OptionCurryAsyncTransport oct = (OptionCurryAsyncTransport) transport;
+            return new OptionCurryAsyncTransport(oct.real, Option.merge(oct.options, options));
+        }
+
+        return new OptionCurryAsyncTransport(transport, options);
     }
 }
