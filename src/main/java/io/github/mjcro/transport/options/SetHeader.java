@@ -21,4 +21,9 @@ class SetHeader implements Option {
     public void accept(Context context) {
         context.headers.put(name, value);
     }
+
+    @Override
+    public String toString() {
+        return "Header " + name + " = " + value;
+    }
 }
