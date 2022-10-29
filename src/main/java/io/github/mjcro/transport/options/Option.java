@@ -4,11 +4,10 @@ import io.github.mjcro.transport.AsyncTransport;
 import io.github.mjcro.transport.Telemetry;
 import io.github.mjcro.transport.Transport;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -143,16 +142,18 @@ public interface Option extends Consumer<Context> {
      * @return Random user agent.
      */
     static Option randomUserAgent() {
-        try {
-            String ua = new String(
-                    Files.readAllBytes(Paths.get(Option.class.getResource("/agents.txt").toURI())),
-                    StandardCharsets.UTF_8
-            );
+        try (InputStream inputStream = Option.class.getClassLoader().getResourceAsStream("agents.txt")) {
+            ByteArrayOutputStream result = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            for (int length; (length = inputStream.read(buffer)) != -1; ) {
+                result.write(buffer, 0, length);
+            }
+            String ua = result.toString(StandardCharsets.UTF_8.name());
             String[] agents = Arrays.stream(ua.split("\n"))
                     .filter($ -> !$.isEmpty())
                     .toArray(String[]::new);
             return userAgent(agents[new Random().nextInt(agents.length)]);
-        } catch (URISyntaxException | IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
