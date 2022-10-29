@@ -1,7 +1,5 @@
 package io.github.mjcro.transport;
 
-import com.sun.tools.javac.util.List;
-
 import java.util.function.Consumer;
 
 /**
@@ -46,6 +44,6 @@ public interface TelemetryConsumer extends Consumer<Telemetry> {
             return wrap(a);
         }
 
-        return new TelemetryConsumerList(List.of(wrap(a), wrap(b)));
+        return new TelemetryConsumerList(new TelemetryConsumer[]{wrap(a), wrap(b)});
     }
 }

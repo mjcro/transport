@@ -6,7 +6,7 @@ import java.util.List;
 class TelemetryConsumerList implements TelemetryConsumer {
     private final ArrayList<TelemetryConsumer> consumers = new ArrayList<>();
 
-    TelemetryConsumerList(List<TelemetryConsumer> consumers) {
+    TelemetryConsumerList(TelemetryConsumer[] consumers) {
         for (TelemetryConsumer consumer : consumers) {
             if (consumer instanceof TelemetryConsumerList) {
                 this.consumers.addAll(((TelemetryConsumerList) consumer).consumers);
@@ -14,7 +14,7 @@ class TelemetryConsumerList implements TelemetryConsumer {
                 continue;
             }
 
-            consumers.add(consumer);
+            this.consumers.add(consumer);
         }
     }
 
