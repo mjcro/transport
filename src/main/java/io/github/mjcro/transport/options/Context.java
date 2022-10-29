@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -27,6 +28,8 @@ public class Context {
     HashMap<String, List<String>> headers = new HashMap<>();
 
     TelemetryConsumer telemetryConsumer = TelemetryConsumer.NONE;
+
+    HashMap<String, Object> metadata = new HashMap<>();
 
     public Context() {
     }
@@ -173,5 +176,34 @@ public class Context {
      */
     public TelemetryConsumer getTelemetryConsumer() {
         return this.telemetryConsumer;
+    }
+
+    /**
+     * Sets arbitrary metadata.
+     * This is not a part of this library standard, but this metadata can be used
+     * by custom transport implementations of telemetry consumers.
+     *
+     * @param key   Metadata key.
+     * @param value Metadata value.
+     */
+    public void setMetadata(String key, Object value) {
+        this.metadata.put(key, value);
+    }
+
+    /**
+     * @return Metadata associated with this context.
+     */
+    public Map<String, Object> getMetadata() {
+        return new HashMap<>(metadata);
+    }
+
+    /**
+     * Returns metadata by key.
+     *
+     * @param key Metadata key.
+     * @return Metadata value.
+     */
+    public Optional<Object> getMetadata(String key) {
+        return Optional.ofNullable(metadata.get(key));
     }
 }

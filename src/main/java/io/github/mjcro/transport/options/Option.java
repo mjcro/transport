@@ -211,6 +211,15 @@ public interface Option extends Consumer<Context> {
     }
 
     /**
+     * @param key   Metadata key.
+     * @param value Metadata value.
+     * @return Option setting metadata.
+     */
+    static Option setMetadata(String key, Object value) {
+        return new SetMetadata(key, value);
+    }
+
+    /**
      * Creates currying adapter that will inject provided options
      * to all requests made using this transport.
      *
