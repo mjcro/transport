@@ -3,11 +3,7 @@ package io.github.mjcro.transport;
 import io.github.mjcro.transport.options.Context;
 import io.github.mjcro.transport.options.Option;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,11 +11,7 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -60,22 +52,44 @@ public class LocalFsCachingAdapter implements Transport {
             return real.call(request, options);
         }
 
+        long nano = System.nanoTime();
+        String filename;
         try {
-            String filename = filename(request, context);
+            filename = filename(request, context);
             if (filename != null) {
                 // Checking file presence
                 Response response = loadFile(filename);
                 if (response != null) {
+                    context.getTelemetryConsumer().accept(Telemetry.success(
+                            this.getClass(),
+                            request,
+                            context,
+                            response,
+                            Duration.ofNanos(System.nanoTime() - nano)
+                    ));
                     return response;
                 }
             }
+        } catch (IOException | NoSuchAlgorithmException e) {
+            context.getTelemetryConsumer().accept(Telemetry.failed(
+                    this.getClass(),
+                    request,
+                    context,
+                    e,
+                    Duration.ofNanos(System.nanoTime() - nano)
+            ));
+            throw new RuntimeException("Unable to perform cache operation", e);
+        }
 
-            Response response = real.call(request, options);
+        Response response = real.call(request, options);
+
+        try {
             if (filename != null && response != null) {
                 saveFile(filename, response);
             }
             return response;
-        } catch (IOException | NoSuchAlgorithmException e) {
+        } catch (IOException e) {
+            // No telemetry on this step because underlying transport already sent it
             throw new RuntimeException(
                     "Unable to perform cache operation",
                     e

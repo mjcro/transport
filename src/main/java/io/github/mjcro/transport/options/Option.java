@@ -1,6 +1,7 @@
 package io.github.mjcro.transport.options;
 
 import io.github.mjcro.transport.AsyncTransport;
+import io.github.mjcro.transport.Telemetry;
 import io.github.mjcro.transport.Transport;
 
 import java.io.IOException;
@@ -199,6 +200,14 @@ public interface Option extends Consumer<Context> {
      */
     static Option useCaching() {
         return useCaching(true);
+    }
+
+    /**
+     * @param consumer Telemetry consumer to use, nullable.
+     * @return Option setting telemetry consumer.
+     */
+    static Option telemetryConsumer(Consumer<Telemetry> consumer) {
+        return new SetTelemetryConsumer(consumer);
     }
 
     /**

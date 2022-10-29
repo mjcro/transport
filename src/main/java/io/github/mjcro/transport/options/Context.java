@@ -1,12 +1,15 @@
 package io.github.mjcro.transport.options;
 
 import io.github.mjcro.transport.Request;
+import io.github.mjcro.transport.Telemetry;
+import io.github.mjcro.transport.TelemetryConsumer;
 
 import java.net.URI;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Mutable container of HTTP transport settings.
@@ -23,6 +26,8 @@ public class Context {
 
     HashMap<String, List<String>> headers = new HashMap<>();
 
+    TelemetryConsumer telemetryConsumer = TelemetryConsumer.NONE;
+
     public Context() {
     }
 
@@ -33,7 +38,8 @@ public class Context {
             String method,
             String urlPrefix,
             Duration timeout,
-            HashMap<String, List<String>> headers
+            HashMap<String, List<String>> headers,
+            TelemetryConsumer consumer
     ) {
         this.http2 = http2;
         this.allowRedirects = allowRedirects;
@@ -42,6 +48,7 @@ public class Context {
         this.urlPrefix = urlPrefix;
         this.timeout = timeout;
         this.headers = new HashMap<>(headers);
+        this.telemetryConsumer = consumer;
     }
 
     /**
@@ -85,7 +92,7 @@ public class Context {
      * @return Clone of context.
      */
     public Context copy() {
-        return new Context(http2, allowRedirects, useCache, method, urlPrefix, timeout, headers);
+        return new Context(http2, allowRedirects, useCache, method, urlPrefix, timeout, headers, telemetryConsumer);
     }
 
     /**
@@ -150,5 +157,21 @@ public class Context {
      */
     public URI formatURI(String uri) {
         return URI.create(formatURLString(uri));
+    }
+
+    /**
+     * Appends telemetry consumer.
+     *
+     * @param consumer Telemetry consumer.
+     */
+    public void addTelemetryConsumer(Consumer<Telemetry> consumer) {
+        this.telemetryConsumer = TelemetryConsumer.join(this.telemetryConsumer, consumer);
+    }
+
+    /**
+     * @return Telemetry consumer.
+     */
+    public TelemetryConsumer getTelemetryConsumer() {
+        return this.telemetryConsumer;
     }
 }
