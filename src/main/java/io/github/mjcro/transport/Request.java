@@ -8,7 +8,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Request to make by {@link Transport}.
+ */
 public interface Request extends Envelope {
+    /**
+     * Creates new request object.
+     *
+     * @param headers Request headers.
+     * @param address Remote address.
+     * @param body    Request body.
+     * @param options Request options.
+     * @return Request object.
+     */
     static Request create(Map<String, List<String>> headers, String address, byte[] body, Option... options) {
         return new RequestImpl(
                 headers,
@@ -18,6 +30,15 @@ public interface Request extends Envelope {
         );
     }
 
+    /**
+     * Creates new request object.
+     *
+     * @param headers Request headers.
+     * @param address Remote address.
+     * @param body    Request body.
+     * @param options Request options.
+     * @return Request object.
+     */
     static Request create(Map<String, List<String>> headers, String address, String body, Option... options) {
         return create(
                 headers,
@@ -27,6 +48,14 @@ public interface Request extends Envelope {
         );
     }
 
+    /**
+     * Creates new request object with no request body.
+     *
+     * @param headers Request headers.
+     * @param address Remote address.
+     * @param options Request options.
+     * @return Request object.
+     */
     static Request create(Map<String, List<String>> headers, String address, Option... options) {
         return create(
                 headers,
@@ -36,6 +65,13 @@ public interface Request extends Envelope {
         );
     }
 
+    /**
+     * Creates new request object with no request body and no headers.
+     *
+     * @param address Remote address.
+     * @param options Request options.
+     * @return Request object.
+     */
     static Request create(String address, Option... options) {
         return create(
                 Collections.emptyMap(),
@@ -45,6 +81,15 @@ public interface Request extends Envelope {
         );
     }
 
+    /**
+     * Creates new request object.
+     *
+     * @param headers Request headers.
+     * @param address Remote address.
+     * @param body    Request body.
+     * @param options Request options.
+     * @return Request object.
+     */
     static Request createPlain(Map<String, String> headers, String address, byte[] body, Option... options) {
         return new RequestImpl(
                 headers == null || headers.isEmpty()
