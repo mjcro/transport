@@ -1,6 +1,6 @@
 package io.github.mjcro.transport.options;
 
-public class SetMetadata implements Option {
+class SetMetadata implements Option {
     private final String key;
     private final Object value;
 

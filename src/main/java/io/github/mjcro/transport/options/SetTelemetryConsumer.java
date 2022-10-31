@@ -4,7 +4,7 @@ import io.github.mjcro.transport.Telemetry;
 
 import java.util.function.Consumer;
 
-public class SetTelemetryConsumer implements Option {
+class SetTelemetryConsumer implements Option {
     private final Consumer<Telemetry> consumer;
 
     public SetTelemetryConsumer(Consumer<Telemetry> consumer) {
