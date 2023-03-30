@@ -46,7 +46,7 @@ class TelemetryImpl implements Telemetry {
     }
 
     @Override
-    public Duration getDuration() {
+    public Duration getElapsed() {
         return duration;
     }
 

@@ -1,5 +1,6 @@
 package io.github.mjcro.transport;
 
+import io.github.mjcro.interfaces.durations.WithElapsed;
 import io.github.mjcro.transport.options.Context;
 
 import java.time.Duration;
@@ -8,7 +9,7 @@ import java.util.Optional;
 /**
  * Contains tracing data.
  */
-public interface Telemetry {
+public interface Telemetry extends WithElapsed {
     /**
      * @return Class of transport that handled request.
      */
@@ -23,11 +24,6 @@ public interface Telemetry {
      * @return Compiled request context.
      */
     Context getRequestContext();
-
-    /**
-     * @return Request duration, can be ZERO.
-     */
-    Duration getDuration();
 
     /**
      * @return Response object.

@@ -1,6 +1,6 @@
 package io.github.mjcro.transport;
 
-import io.github.mjcro.interfaces.duration.WithElapsed;
+import io.github.mjcro.interfaces.durations.WithElapsed;
 
 import java.time.Duration;
 import java.util.Collections;
