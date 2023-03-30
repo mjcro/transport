@@ -1,6 +1,6 @@
 package io.github.mjcro.transport;
 
-import io.github.mjcro.references.bytes.ByteBodyReference;
+import io.github.mjcro.interfaces.bytes.WithByteBody;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public interface Envelope extends ByteBodyReference {
+public interface Envelope extends WithByteBody {
     /**
      * @return Envelope headers, unmodifiable map.
      */

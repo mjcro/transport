@@ -1,6 +1,6 @@
 package io.github.mjcro.transport;
 
-import io.github.mjcro.references.time.ElapsedReference;
+import io.github.mjcro.interfaces.duration.WithElapsed;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * Transport response.
  */
-public interface Response extends Envelope, ElapsedReference {
+public interface Response extends Envelope, WithElapsed {
     /**
      * Creates response object.
      *
