@@ -19,6 +19,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Transport implementation over Java 11 native HTTP client.
@@ -104,8 +105,9 @@ public class NativeJavaTransport implements HttpTransport {
     private java.net.http.HttpRequest.Builder applyRequestOptions(java.net.http.HttpRequest.Builder b, Option[] options) {
         if (options != null) {
             for (Option option : options) {
-                if (option instanceof HttpRequestBuilderOption) {
-                    b = ((HttpRequestBuilderOption) option).apply(b);
+                Optional<HttpRequestBuilderOption> wrapped = HttpRequestBuilderOption.wrap(option);
+                if (wrapped.isPresent()) {
+                    b = wrapped.get().apply(b);
                 }
             }
         }
@@ -122,8 +124,9 @@ public class NativeJavaTransport implements HttpTransport {
     private java.net.http.HttpClient.Builder applyClientOptions(java.net.http.HttpClient.Builder b, Option[] options) {
         if (options != null) {
             for (Option option : options) {
-                if (option instanceof HttpClientBuilderOption) {
-                    b = ((HttpClientBuilderOption) option).apply(b);
+                Optional<HttpClientBuilderOption> wrapped = HttpClientBuilderOption.wrap(option);
+                if (wrapped.isPresent()) {
+                    b = wrapped.get().apply(b);
                 }
             }
         }
