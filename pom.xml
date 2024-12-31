@@ -6,7 +6,7 @@
 
     <groupId>io.github.mjcro</groupId>
     <artifactId>transport</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>3.0.0</version>
 
     <name>MicroJ Transport</name>
     <description>Transport level abstraction</description>
@@ -34,8 +34,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
     <distributionManagement>
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>io.github.mjcro</groupId>
             <artifactId>interfaces</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.18</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
