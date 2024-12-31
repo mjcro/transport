@@ -8,10 +8,22 @@ import io.github.mjcro.transport.options.CachingMode;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Caching decorator over any {@link Transport};
+ *
+ * @param <Req> Request type.
+ * @param <Res> Response type.
+ */
 public class CachingTransportDecorator<Req, Res> implements Transport<Req, Res>, Decorator<Transport<Req, Res>> {
     private final Cache<Req, Res> cache;
     private final Transport<Req, Res> decorated;
 
+    /**
+     * Construct new caching decorator.
+     *
+     * @param cache     Cache to use.
+     * @param decorated Transport being decorated.
+     */
     public CachingTransportDecorator(Cache<Req, Res> cache, Transport<Req, Res> decorated) {
         this.cache = Objects.requireNonNull(cache, "cache");
         this.decorated = Objects.requireNonNull(decorated, "decorated");
@@ -41,6 +53,12 @@ public class CachingTransportDecorator<Req, Res> implements Transport<Req, Res>,
         return response;
     }
 
+    /**
+     * Reads caching mode from given options.
+     *
+     * @param options Options to get data from.
+     * @return Caching mode from options or default.
+     */
     private CachingMode readCachingMode(Option[] options) {
         CachingMode mode = CachingMode.ENABLED;
         if (options != null) {
