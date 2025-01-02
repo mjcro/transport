@@ -98,7 +98,13 @@
         <dependency>
             <groupId>io.github.mjcro</groupId>
             <artifactId>interfaces</artifactId>
-            <version>1.0.18</version>
+            <version>1.0.20</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>5.24.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>

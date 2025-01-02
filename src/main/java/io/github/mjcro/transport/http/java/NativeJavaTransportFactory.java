@@ -1,12 +1,15 @@
 package io.github.mjcro.transport.http.java;
 
 import io.github.mjcro.interfaces.experimental.integration.Option;
+import io.github.mjcro.interfaces.experimental.integration.TransportFactory;
+import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpRequest;
+import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpResponse;
 import io.github.mjcro.transport.options.Options;
 
 /**
  * Factory creating native Java HTTP transports.
  */
-public class NativeJavaTransportFactory {
+public class NativeJavaTransportFactory implements TransportFactory<HttpRequest, HttpResponse, NativeJavaTransport> {
     private final Option[] factoryOptions;
 
     /**
@@ -24,7 +27,7 @@ public class NativeJavaTransportFactory {
      * @param options Additional options to pass to client being created.
      * @return Native Java HTTP transport.
      */
-    public NativeJavaTransport get(Option... options) {
+    public NativeJavaTransport getTransport(Option... options) {
         return new NativeJavaTransport(Options.merge(factoryOptions, options));
     }
 }
