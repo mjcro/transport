@@ -33,10 +33,14 @@ public class HeaderOption implements HttpRequestBuilderOption {
     }
 
     public static HeaderOption acceptEncoding() {
-        return acceptEncoding("gzip");
+        return acceptEncoding("gzip, deflate, br");
     }
 
     public static HeaderOption acceptLanguage(String s) {
         return new HeaderOption("Accept-Language", s);
+    }
+
+    public static HeaderOption cacheControl(String s) {
+        return new HeaderOption("Cache-Control", s);
     }
 }
