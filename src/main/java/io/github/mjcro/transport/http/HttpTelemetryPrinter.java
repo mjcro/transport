@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 /**
  * {@link TelemetryConsumer} implementation that works with HTTP telemetry.
@@ -50,8 +49,9 @@ public class HttpTelemetryPrinter implements TelemetryConsumer<HttpRequest, Http
     @Override
     public void accept(Telemetry<? extends HttpRequest, ? extends HttpResponse, ?, ? extends TemporalAccessor> t) {
         printStream.printf(
-                Locale.ROOT, "%s [%.3fs] %s %s -> %s\n",
+                Locale.ROOT, "%s %s [%.3fs] %s %s -> %s\n",
                 timeFormatter.format(t.getCreatedAt()),
+                t.getResponse().map(HttpResponse::getStatusCode).map(String::valueOf).orElse("..."),
                 t.getElapsed().orElse(Duration.ZERO).toMillis() / 1000.f,
                 t.getRequest().getMethod(),
                 t.getRequest().getURL(),
@@ -63,17 +63,27 @@ public class HttpTelemetryPrinter implements TelemetryConsumer<HttpRequest, Http
             printStream.println("!!! " + exception.getMessage());
         }
         if (detailed) {
-            printHeaders(">>> ", t.getRequest().getHeaders());
-            if (t.getRequest().isBodyPresent()) {
-                printStream.println(t.getRequest().getBodyString());
-            }
+            printRequestDetails(t.getRequest());
+            printResponseDetails(t.getResponse().orElse(null));
+        }
+    }
 
-            t.ifHasResponse((Consumer<HttpResponse>) $ -> {
-                printHeaders("<<< ", $.getHeaders());
-                if ($.isBodyPresent()) {
-                    printStream.println($.getBodyString());
-                }
-            });
+    public void printRequestDetails(HttpRequest request) {
+        if (request != null) {
+            printHeaders(">>> ", request.getHeaders());
+            if (request.isBodyPresent()) {
+                printStream.println(request.getBodyString());
+            }
+        }
+    }
+
+    public void printResponseDetails(HttpResponse response) {
+        if (response != null) {
+            printStream.println(response.getStatusCode());
+            printHeaders("<<< ", response.getHeaders());
+            if (response.isBodyPresent()) {
+                printStream.println(response.getBodyString());
+            }
         }
     }
 
