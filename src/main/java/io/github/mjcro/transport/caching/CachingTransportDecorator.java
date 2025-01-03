@@ -4,6 +4,7 @@ import io.github.mjcro.interfaces.Decorator;
 import io.github.mjcro.interfaces.experimental.integration.Option;
 import io.github.mjcro.interfaces.experimental.integration.Transport;
 import io.github.mjcro.transport.options.CachingMode;
+import io.github.mjcro.transport.options.Options;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -17,16 +18,19 @@ import java.util.Optional;
 public class CachingTransportDecorator<Req, Res> implements Transport<Req, Res>, Decorator<Transport<Req, Res>> {
     private final Cache<Req, Res> cache;
     private final Transport<Req, Res> decorated;
+    private final Option[] defaultOptions;
 
     /**
      * Construct new caching decorator.
      *
-     * @param cache     Cache to use.
-     * @param decorated Transport being decorated.
+     * @param cache          Cache to use.
+     * @param decorated      Transport being decorated.
+     * @param defaultOptions Default transport options to inject.
      */
-    public CachingTransportDecorator(Cache<Req, Res> cache, Transport<Req, Res> decorated) {
+    public CachingTransportDecorator(Cache<Req, Res> cache, Transport<Req, Res> decorated, Option... defaultOptions) {
         this.cache = Objects.requireNonNull(cache, "cache");
         this.decorated = Objects.requireNonNull(decorated, "decorated");
+        this.defaultOptions = defaultOptions;
     }
 
     @Override
@@ -35,7 +39,8 @@ public class CachingTransportDecorator<Req, Res> implements Transport<Req, Res>,
     }
 
     @Override
-    public Res send(Req request, Option... options) {
+    public Res send(Req request, Option... options0) {
+        Option[] options = Options.merge(this.defaultOptions, options0);
         CachingMode mode = readCachingMode(options);
         if (mode == CachingMode.ENABLED) {
             // Caching enabled
