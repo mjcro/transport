@@ -22,6 +22,8 @@ import java.util.Scanner;
  * Local filesystem cache implementation for HTTP transport.
  */
 public class LocalFilesystemHttpCache extends AbstractLocalFilesystemCache<HttpRequest, HttpResponse> {
+    private final String nl = System.lineSeparator();
+
     /**
      * Construct local filesystem cache.
      *
@@ -50,8 +52,8 @@ public class LocalFilesystemHttpCache extends AbstractLocalFilesystemCache<HttpR
             w.println(response.getHeaders().size());
             for (Map.Entry<String, List<String>> header : response.getHeaders()) {
                 for (String s : header.getValue()) {
-                    w.println(header.getKey());
-                    w.println(s);
+                    w.println(header.getKey().strip());
+                    w.println(s.strip());
                 }
             }
             w.println(response.getBodyString());
@@ -62,7 +64,7 @@ public class LocalFilesystemHttpCache extends AbstractLocalFilesystemCache<HttpR
     @Override
     public HttpResponse readResponse(InputStream is) {
         Scanner scanner = new Scanner(is);
-        scanner.useDelimiter("\n");
+        scanner.useDelimiter(nl);
         int version = scanner.nextInt();
         if (version != 0x01) {
             throw new LocalFilesystemHttpCacheException("Unsupported version " + version);
@@ -77,7 +79,7 @@ public class LocalFilesystemHttpCache extends AbstractLocalFilesystemCache<HttpR
             String value = scanner.next();
             headers.computeIfAbsent(name, s -> new ArrayList<>()).add(value);
         }
-        scanner.skip("\n"); // Skipping newline left from previous token
+        scanner.skip(nl); // Skipping newline left from previous token
         scanner.useDelimiter("\\z");
         String body = scanner.next();
 
@@ -92,6 +94,9 @@ public class LocalFilesystemHttpCache extends AbstractLocalFilesystemCache<HttpR
         } else if (url.startsWith("http://")) {
             url = url.substring(7);
         }
+        while (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
         int i = url.indexOf("?");
         if (i >= 0) {
             url = url.substring(0, i);
@@ -104,6 +109,6 @@ public class LocalFilesystemHttpCache extends AbstractLocalFilesystemCache<HttpR
         url = url.replaceAll("\\W", "-");
         url = url.replaceAll("-{2,}", "-");
         url = request.getMethod().toLowerCase(Locale.ROOT) + "-" + url;
-        return url;
+        return url + ".cache.txt";
     }
 }
