@@ -4,6 +4,7 @@ import io.github.mjcro.interfaces.experimental.integration.Option;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpRequest;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpResponse;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpTransport;
+import io.github.mjcro.transport.InputStreamReadingUtil;
 import io.github.mjcro.transport.http.BasicHeaders;
 import io.github.mjcro.transport.http.BasicHttpRequest;
 import io.github.mjcro.transport.http.BasicHttpResponse;
@@ -13,6 +14,7 @@ import io.github.mjcro.transport.http.java.options.HttpTelemetryOption;
 import io.github.mjcro.transport.http.options.HttpResponseConsumerOption;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.time.Duration;
@@ -58,11 +60,12 @@ public class NativeJavaTransport implements HttpTransport {
             clientBuilder = applyClientOptions(clientBuilder, options);
 
             client = clientBuilder.build();
-            java.net.http.HttpResponse<byte[]> nativeResponse = client.send(
+            java.net.http.HttpResponse<InputStream> nativeResponse = client.send(
                     nativeRequest,
-                    java.net.http.HttpResponse.BodyHandlers.ofByteArray()
+                    java.net.http.HttpResponse.BodyHandlers.ofInputStream()
             );
             response = parseResponse(start, nativeResponse);
+            nativeResponse.body().close();
             applyResponseConsumers(response, defaultOptions);
             applyResponseConsumers(response, options);
             for (HttpTelemetryOption<?> receiver : telemetryReceivers) {
@@ -191,13 +194,29 @@ public class NativeJavaTransport implements HttpTransport {
      * @param response Java 11 native response.
      * @return HTTP response instance.
      */
-    private HttpResponse parseResponse(Instant start, java.net.http.HttpResponse<byte[]> response) {
+    private HttpResponse parseResponse(Instant start, java.net.http.HttpResponse<InputStream> response) throws IOException {
+        byte[] body = readResponseBytes(response);
+
         return new BasicHttpResponse(
                 response.statusCode(),
                 Duration.between(start, Instant.now()),
                 response.uri().toString(),
                 new BasicHeaders(response.headers().map()),
-                response.body()
+                body
+        );
+    }
+
+    /**
+     * Reads response bytes and decodes them if needed.
+     *
+     * @param response Java 11 native response.
+     * @return Body bytes.
+     * @throws IOException On read or decryption error.
+     */
+    private byte[] readResponseBytes(java.net.http.HttpResponse<InputStream> response) throws IOException {
+        return InputStreamReadingUtil.readAllUsingContentEncoding(
+                response.body(),
+                response.headers().firstValue("Content-Encoding").orElse(null)
         );
     }
 
