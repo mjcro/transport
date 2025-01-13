@@ -1,19 +1,21 @@
 package io.github.mjcro.transport.example;
 
+import io.github.mjcro.interfaces.experimental.integration.Transport;
+import io.github.mjcro.interfaces.experimental.integration.TransportFactory;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpRequest;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpResponse;
-import io.github.mjcro.transport.caching.CachingTransportDecorator;
+import io.github.mjcro.transport.caching.CachingTransportDecoratorFactory;
 import io.github.mjcro.transport.caching.LocalFilesystemHttpCache;
 import io.github.mjcro.transport.http.BasicHttpRequest;
 import io.github.mjcro.transport.http.HttpTelemetryPrinter;
-import io.github.mjcro.transport.http.java.NativeJavaTransport;
+import io.github.mjcro.transport.http.java.NativeJavaTransportFactory;
 import io.github.mjcro.transport.http.java.options.HeaderOption;
 import io.github.mjcro.transport.http.java.options.HttpTelemetryOption;
 import io.github.mjcro.transport.http.java.options.HttpVersion2Option;
 
 public class NativeJavaExamples {
     public static void main(String[] args) {
-        NativeJavaTransport transport = new NativeJavaTransport(
+        TransportFactory<HttpRequest, HttpResponse> factory = new NativeJavaTransportFactory(
                 new HttpTelemetryOption<>(new HttpTelemetryPrinter(true), () -> null),
                 new HttpVersion2Option(),
                 HeaderOption.accept("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
@@ -22,10 +24,14 @@ public class NativeJavaExamples {
                 HeaderOption.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0"),
                 HeaderOption.cacheControl("no-cache")
         );
-        CachingTransportDecorator<HttpRequest, HttpResponse> cached = new CachingTransportDecorator<>(
+
+        factory = new CachingTransportDecoratorFactory<>(
                 new LocalFilesystemHttpCache("dev/cache"),
-                transport
+                factory
         );
+
+        factory.getTransport();
+        Transport<HttpRequest, HttpResponse> cached = factory.getTransport();
 
         cached.send(BasicHttpRequest.get("https://httpbin.org/get"));
         cached.send(BasicHttpRequest.get("https://httpbin.org/gzip"));

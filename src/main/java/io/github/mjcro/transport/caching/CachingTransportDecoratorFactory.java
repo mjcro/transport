@@ -7,15 +7,15 @@ import io.github.mjcro.interfaces.experimental.integration.TransportFactory;
 
 import java.util.Objects;
 
-public class CachingTransportDecoratorFactory<Req, Res, T extends Transport<Req, Res>>
-        implements TransportFactory<Req, Res, T>, Decorator<TransportFactory<Req, Res, T>> {
+public class CachingTransportDecoratorFactory<Req, Res>
+        implements TransportFactory<Req, Res>, Decorator<TransportFactory<Req, Res>> {
     private final Cache<Req, Res> cache;
-    private final TransportFactory<Req, Res, T> decorated;
+    private final TransportFactory<Req, Res> decorated;
     private final Option[] defaultOptions;
 
     public CachingTransportDecoratorFactory(
             Cache<Req, Res> cache,
-            TransportFactory<Req, Res, T> other,
+            TransportFactory<Req, Res> other,
             Option... defaultOptions
     ) {
         this.cache = Objects.requireNonNull(cache, "cache");
@@ -24,14 +24,13 @@ public class CachingTransportDecoratorFactory<Req, Res, T extends Transport<Req,
     }
 
     @Override
-    public TransportFactory<Req, Res, T> getDecorated() {
+    public TransportFactory<Req, Res> getDecorated() {
         return decorated;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public T getTransport(Option... options) {
-        T transport = getDecorated().getTransport(options);
-        return (T) new CachingTransportDecorator<>(cache, transport, defaultOptions);
+    public Transport<Req, Res> getTransport(Option... options) {
+        Transport<Req, Res> transport = getDecorated().getTransport(options);
+        return new CachingTransportDecorator<>(cache, transport, defaultOptions);
     }
 }

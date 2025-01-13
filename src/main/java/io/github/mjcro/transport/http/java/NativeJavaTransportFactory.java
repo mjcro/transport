@@ -9,7 +9,7 @@ import io.github.mjcro.transport.options.Options;
 /**
  * Factory creating native Java HTTP transports.
  */
-public class NativeJavaTransportFactory implements TransportFactory<HttpRequest, HttpResponse, NativeJavaTransport> {
+public class NativeJavaTransportFactory implements TransportFactory<HttpRequest, HttpResponse> {
     private final Option[] factoryOptions;
 
     /**
