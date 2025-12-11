@@ -14,12 +14,12 @@ import java.util.function.UnaryOperator;
  */
 public interface HttpRequestBuilderNativeJavaOption extends UnaryOperator<HttpRequest.Builder>, Option {
     /**
-     * Attempts to wrap given {@link Option} to {@link HttpRequestBuilderNativeJavaOption}.
+     * Attempts to transform given {@link Option} to {@link HttpRequestBuilderNativeJavaOption}.
      *
      * @param o Option to wrap.
      * @return Wrapped option, if any.
      */
-    static @NonNull Optional<HttpRequestBuilderNativeJavaOption> wrap(@Nullable Option o) {
+    static @NonNull Optional<HttpRequestBuilderNativeJavaOption> transform(@Nullable Option o) {
         if (o instanceof HttpRequestBuilderNativeJavaOption) {
             return Optional.of((HttpRequestBuilderNativeJavaOption) o);
         } else if (o instanceof Timeout) {

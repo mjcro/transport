@@ -5,13 +5,16 @@ import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpReque
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpResponse;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpTransport;
 import io.github.mjcro.transport.InputStreamReadingUtil;
+import io.github.mjcro.transport.UnsupportedOptionException;
 import io.github.mjcro.transport.http.BasicHeaders;
 import io.github.mjcro.transport.http.BasicHttpRequest;
 import io.github.mjcro.transport.http.BasicHttpResponse;
 import io.github.mjcro.transport.http.java.options.HttpClientBuilderNativeJavaOption;
 import io.github.mjcro.transport.http.java.options.HttpRequestBuilderNativeJavaOption;
-import io.github.mjcro.transport.http.java.options.HttpTelemetryNativeJavaOption;
 import io.github.mjcro.transport.http.options.HttpResponseConsumerOption;
+import io.github.mjcro.transport.http.options.HttpTelemetryOption;
+import io.github.mjcro.transport.options.FailOnUnknownOption;
+import io.github.mjcro.transport.options.Options;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -40,11 +43,55 @@ public class NativeJavaTransport implements HttpTransport {
         this.defaultOptions = options;
     }
 
+    /**
+     * Merges given options with default ones provided on transport
+     * instantiation and transforms result into options supported by
+     * this transport.
+     *
+     * @param options Additional options.
+     * @return Resulting options.
+     */
+    public Option @Nullable [] getMergedTransformedOptions(Option @Nullable ... options) {
+        Option[] mergedOptions = Options.merge(this.defaultOptions, options);
+        if (mergedOptions == null || mergedOptions.length == 0) {
+            return mergedOptions;
+        }
+
+        boolean failOnUnknown = FailOnUnknownOption.isEnabled(mergedOptions, false);
+        ArrayList<Option> transformed = new ArrayList<>(mergedOptions.length);
+        for (Option option : mergedOptions) {
+            if (option instanceof FailOnUnknownOption) {
+                continue;
+            }
+            if (option instanceof HttpTelemetryOption<?> || option instanceof HttpResponseConsumerOption) {
+                transformed.add(option);
+            } else {
+                Optional<HttpRequestBuilderNativeJavaOption> w1 = HttpRequestBuilderNativeJavaOption.transform(option);
+                if (w1.isPresent()) {
+                    transformed.add(w1.get());
+                    continue;
+                }
+
+                Optional<HttpClientBuilderNativeJavaOption> w2 = HttpClientBuilderNativeJavaOption.transform(option);
+                if (w2.isPresent()) {
+                    transformed.add(w2.get());
+                    continue;
+                }
+
+                if (failOnUnknown) {
+                    throw new UnsupportedOptionException(this, option);
+                }
+            }
+        }
+
+        return transformed.toArray(new Option[0]);
+    }
+
     @Override
     public @NonNull HttpResponse send(@NonNull HttpRequest request, Option @Nullable ... options) {
-        ArrayList<HttpTelemetryNativeJavaOption<?>> telemetryReceivers = new ArrayList<>();
-        telemetryReceivers.addAll(getTelemetryReceivers(defaultOptions));
-        telemetryReceivers.addAll(getTelemetryReceivers(options));
+        Option[] mergedOptions = getMergedTransformedOptions(options);
+
+        ArrayList<HttpTelemetryOption<?>> telemetryReceivers = new ArrayList<>(getTelemetryReceivers(mergedOptions));
 
         HttpResponse response = null;
         HttpRequest rebuiltRequest = null;
@@ -52,14 +99,12 @@ public class NativeJavaTransport implements HttpTransport {
         Instant start = Instant.now();
         try {
             java.net.http.HttpRequest.Builder b = createRequestBuilder(request);
-            b = applyRequestOptions(b, defaultOptions);
-            b = applyRequestOptions(b, options);
+            b = applyRequestOptions(b, mergedOptions);
             java.net.http.HttpRequest nativeRequest = b.build();
 
             rebuiltRequest = rebuildRequest(nativeRequest, request);
             HttpClient.Builder clientBuilder = HttpClient.newBuilder();
-            clientBuilder = applyClientOptions(clientBuilder, defaultOptions);
-            clientBuilder = applyClientOptions(clientBuilder, options);
+            clientBuilder = applyClientOptions(clientBuilder, mergedOptions);
 
             client = clientBuilder.build();
             java.net.http.HttpResponse<InputStream> nativeResponse = client.send(
@@ -68,24 +113,23 @@ public class NativeJavaTransport implements HttpTransport {
             );
             response = parseResponse(start, nativeResponse);
             nativeResponse.body().close();
-            applyResponseConsumers(response, defaultOptions);
-            applyResponseConsumers(response, options);
-            for (HttpTelemetryNativeJavaOption<?> receiver : telemetryReceivers) {
+            applyResponseConsumers(response, mergedOptions);
+            for (HttpTelemetryOption<?> receiver : telemetryReceivers) {
                 receiver.onSuccess(rebuiltRequest, response);
             }
             return response;
         } catch (IOException | InterruptedException e) {
-            for (HttpTelemetryNativeJavaOption<?> receiver : telemetryReceivers) {
+            for (HttpTelemetryOption<?> receiver : telemetryReceivers) {
                 receiver.onException(rebuiltRequest, response, Duration.between(start, Instant.now()), e);
             }
             throw new RuntimeException(e);
         } catch (RuntimeException e) {
-            for (HttpTelemetryNativeJavaOption<?> receiver : telemetryReceivers) {
+            for (HttpTelemetryOption<?> receiver : telemetryReceivers) {
                 receiver.onException(rebuiltRequest == null ? request : rebuiltRequest, response, Duration.between(start, Instant.now()), e);
             }
             throw e;
         } catch (Throwable e) {
-            for (HttpTelemetryNativeJavaOption<?> receiver : telemetryReceivers) {
+            for (HttpTelemetryOption<?> receiver : telemetryReceivers) {
                 receiver.onException(rebuiltRequest == null ? request : rebuiltRequest, response, Duration.between(start, Instant.now()), e);
             }
             throw new RuntimeException(e);
@@ -110,9 +154,8 @@ public class NativeJavaTransport implements HttpTransport {
     private java.net.http.HttpRequest.@NonNull Builder applyRequestOptions(java.net.http.HttpRequest.@NonNull Builder b, Option @Nullable [] options) {
         if (options != null) {
             for (Option option : options) {
-                Optional<HttpRequestBuilderNativeJavaOption> wrapped = HttpRequestBuilderNativeJavaOption.wrap(option);
-                if (wrapped.isPresent()) {
-                    b = wrapped.get().apply(b);
+                if (option instanceof HttpRequestBuilderNativeJavaOption) {
+                    b = ((HttpRequestBuilderNativeJavaOption) option).apply(b);
                 }
             }
         }
@@ -129,9 +172,8 @@ public class NativeJavaTransport implements HttpTransport {
     private java.net.http.HttpClient.@NonNull Builder applyClientOptions(java.net.http.HttpClient.@NonNull Builder b, Option @Nullable [] options) {
         if (options != null) {
             for (Option option : options) {
-                Optional<HttpClientBuilderNativeJavaOption> wrapped = HttpClientBuilderNativeJavaOption.wrap(option);
-                if (wrapped.isPresent()) {
-                    b = wrapped.get().apply(b);
+                if (option instanceof HttpClientBuilderNativeJavaOption) {
+                    b = ((HttpClientBuilderNativeJavaOption) option).apply(b);
                 }
             }
         }
@@ -144,12 +186,12 @@ public class NativeJavaTransport implements HttpTransport {
      * @param options Options to fetch data from, nullable.
      * @return Found telemetry options.
      */
-    private @NonNull List<HttpTelemetryNativeJavaOption<?>> getTelemetryReceivers(Option @Nullable [] options) {
-        ArrayList<HttpTelemetryNativeJavaOption<?>> telemetryReceivers = new ArrayList<>();
+    private @NonNull List<HttpTelemetryOption<?>> getTelemetryReceivers(Option @Nullable [] options) {
+        ArrayList<HttpTelemetryOption<?>> telemetryReceivers = new ArrayList<>();
         if (options != null) {
             for (Option option : options) {
-                if (option instanceof HttpTelemetryNativeJavaOption<?>) {
-                    telemetryReceivers.add((HttpTelemetryNativeJavaOption<?>) option);
+                if (option instanceof HttpTelemetryOption<?>) {
+                    telemetryReceivers.add((HttpTelemetryOption<?>) option);
                 }
             }
         }

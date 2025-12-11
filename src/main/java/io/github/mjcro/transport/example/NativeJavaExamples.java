@@ -10,13 +10,13 @@ import io.github.mjcro.transport.http.BasicHttpRequest;
 import io.github.mjcro.transport.http.HttpTelemetryPrinter;
 import io.github.mjcro.transport.http.java.NativeJavaTransportFactory;
 import io.github.mjcro.transport.http.java.options.HeaderNativeJavaOption;
-import io.github.mjcro.transport.http.java.options.HttpTelemetryNativeJavaOption;
+import io.github.mjcro.transport.http.options.HttpTelemetryOption;
 import io.github.mjcro.transport.http.java.options.HttpVersion2NativeJavaOption;
 
 public class NativeJavaExamples {
     public static void main(String[] args) {
         TransportFactory<HttpRequest, HttpResponse> factory = new NativeJavaTransportFactory(
-                new HttpTelemetryNativeJavaOption<>(new HttpTelemetryPrinter(true), () -> null),
+                new HttpTelemetryOption<>(new HttpTelemetryPrinter(true), () -> null),
                 new HttpVersion2NativeJavaOption(),
                 HeaderNativeJavaOption.accept("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
                 HeaderNativeJavaOption.acceptEncoding(),

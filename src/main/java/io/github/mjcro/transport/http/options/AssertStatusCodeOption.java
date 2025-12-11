@@ -1,16 +1,17 @@
 package io.github.mjcro.transport.http.options;
 
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpResponse;
+import org.jspecify.annotations.NonNull;
 
-public class AssertStatusCode implements HttpResponseConsumerOption {
+public class AssertStatusCodeOption implements HttpResponseConsumerOption {
     private final int expectedResponseCode;
 
-    public AssertStatusCode(int expectedResponseCode) {
+    public AssertStatusCodeOption(int expectedResponseCode) {
         this.expectedResponseCode = expectedResponseCode;
     }
 
     @Override
-    public void accept(HttpResponse response) {
+    public void accept(@NonNull HttpResponse response) {
         if (response.hasStatusCode(expectedResponseCode)) {
             return;
         }

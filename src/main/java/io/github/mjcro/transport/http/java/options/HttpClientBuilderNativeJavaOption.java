@@ -14,12 +14,12 @@ import java.util.function.UnaryOperator;
  */
 public interface HttpClientBuilderNativeJavaOption extends UnaryOperator<HttpClient.Builder>, Option {
     /**
-     * Attempts to wrap given {@link Option} to {@link HttpClientBuilderNativeJavaOption}.
+     * Attempts to transform given {@link Option} to {@link HttpClientBuilderNativeJavaOption}.
      *
      * @param o Option to wrap.
      * @return Wrapped option, if any.
      */
-    static @NonNull Optional<HttpClientBuilderNativeJavaOption> wrap(@Nullable Option o) {
+    static @NonNull Optional<HttpClientBuilderNativeJavaOption> transform(@Nullable Option o) {
         if (o instanceof HttpClientBuilderNativeJavaOption) {
             return Optional.of((HttpClientBuilderNativeJavaOption) o);
         } else if (o instanceof Proxy) {

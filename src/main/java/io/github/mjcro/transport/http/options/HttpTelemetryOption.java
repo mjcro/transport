@@ -1,4 +1,4 @@
-package io.github.mjcro.transport.http.java.options;
+package io.github.mjcro.transport.http.options;
 
 import io.github.mjcro.interfaces.experimental.integration.Option;
 import io.github.mjcro.interfaces.experimental.integration.Telemetry;
@@ -14,11 +14,11 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class HttpTelemetryNativeJavaOption<Meta> implements Option {
+public class HttpTelemetryOption<Meta> implements Option {
     private final Consumer<? super Telemetry<HttpRequest, HttpResponse, Meta, Instant>> consumer;
     private final Supplier<Meta> metaSupplier;
 
-    public HttpTelemetryNativeJavaOption(
+    public HttpTelemetryOption(
             @NonNull Consumer<? super Telemetry<HttpRequest, HttpResponse, Meta, Instant>> consumer,
             @NonNull Supplier<Meta> metaSupplier
     ) {
