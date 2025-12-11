@@ -10,7 +10,7 @@ import java.io.PrintStream;
 import java.time.Duration;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
+import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.Objects;
  * <p>
  * Outputs telemetry data into given {@link PrintStream}.
  */
-public class HttpTelemetryPrinter implements TelemetryConsumer<HttpRequest, HttpResponse, Object, TemporalAccessor> {
+public class HttpTelemetryPrinter implements TelemetryConsumer<HttpRequest, HttpResponse, Object, Temporal> {
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss").withZone(ZoneOffset.UTC);
     private final PrintStream printStream;
     private final boolean detailed;
@@ -47,7 +47,7 @@ public class HttpTelemetryPrinter implements TelemetryConsumer<HttpRequest, Http
     }
 
     @Override
-    public void accept(Telemetry<? extends HttpRequest, ? extends HttpResponse, ?, ? extends TemporalAccessor> t) {
+    public void accept(Telemetry<? extends HttpRequest, ? extends HttpResponse, ?, ? extends Temporal> t) {
         printStream.printf(
                 Locale.ROOT, "%s %s [%.3fs] %s %s -> %s\n",
                 timeFormatter.format(t.getCreatedAt()),

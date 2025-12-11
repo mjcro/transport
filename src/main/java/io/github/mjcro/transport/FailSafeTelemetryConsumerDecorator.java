@@ -6,7 +6,7 @@ import io.github.mjcro.interfaces.experimental.integration.Packet;
 import io.github.mjcro.interfaces.experimental.integration.Telemetry;
 import io.github.mjcro.interfaces.experimental.integration.TelemetryConsumer;
 
-import java.time.temporal.TemporalAccessor;
+import java.time.temporal.Temporal;
 
 /**
  * Special decorator over telemetry consumers suppressing any exception occurred within.
@@ -16,7 +16,7 @@ import java.time.temporal.TemporalAccessor;
  * @param <Meta> Meta type.
  * @param <T>    Temporal accessor type.
  */
-public class FailSafeTelemetryConsumerDecorator<Req extends Packet, Res extends Packet & WithElapsed, Meta, T extends TemporalAccessor>
+public class FailSafeTelemetryConsumerDecorator<Req extends Packet, Res extends Packet & WithElapsed, Meta, T extends Temporal>
         implements TelemetryConsumer<Req, Res, Meta, T>, Decorator<TelemetryConsumer<Req, Res, Meta, T>> {
 
     private final TelemetryConsumer<Req, Res, Meta, T> decorated;
@@ -34,7 +34,7 @@ public class FailSafeTelemetryConsumerDecorator<Req extends Packet, Res extends 
      * @param <T>             Temporal accessor type.
      * @return Telemetry consumer suppressing any exception.
      */
-    public static <Req extends Packet, Res extends Packet & WithElapsed, Meta, T extends TemporalAccessor> TelemetryConsumer<Req, Res, Meta, T> wrap(
+    public static <Req extends Packet, Res extends Packet & WithElapsed, Meta, T extends Temporal> TelemetryConsumer<Req, Res, Meta, T> wrap(
             TelemetryConsumer<Req, Res, Meta, T> consumer,
             boolean printStackTrace
     ) {
