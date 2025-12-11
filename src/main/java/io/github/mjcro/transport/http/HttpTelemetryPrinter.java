@@ -5,6 +5,8 @@ import io.github.mjcro.interfaces.experimental.integration.Telemetry;
 import io.github.mjcro.interfaces.experimental.integration.TelemetryConsumer;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpRequest;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpResponse;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.PrintStream;
 import java.time.Duration;
@@ -32,7 +34,7 @@ public class HttpTelemetryPrinter implements TelemetryConsumer<HttpRequest, Http
      * @param printStream Print stream to output data into.
      * @param detailed    If true - headers and body will also be displayed.
      */
-    public HttpTelemetryPrinter(PrintStream printStream, boolean detailed) {
+    public HttpTelemetryPrinter(@NonNull PrintStream printStream, boolean detailed) {
         this.printStream = Objects.requireNonNull(printStream, "printStream");
         this.detailed = detailed;
     }
@@ -47,7 +49,7 @@ public class HttpTelemetryPrinter implements TelemetryConsumer<HttpRequest, Http
     }
 
     @Override
-    public void accept(Telemetry<? extends HttpRequest, ? extends HttpResponse, ?, ? extends Temporal> t) {
+    public void accept(@NonNull Telemetry<? extends HttpRequest, ? extends HttpResponse, ?, ? extends Temporal> t) {
         printStream.printf(
                 Locale.ROOT, "%s %s [%.3fs] %s %s -> %s\n",
                 timeFormatter.format(t.getCreatedAt()),
@@ -57,7 +59,7 @@ public class HttpTelemetryPrinter implements TelemetryConsumer<HttpRequest, Http
                 t.getRequest().getURL(),
                 t.getResponse().map(HttpResponse::getURL).orElse("null")
         );
-        if (t.hasException()) {
+        if (t.getException().isPresent()) {
             Throwable exception = t.getException().get();
             printStream.println("!!! " + exception.getClass().getName());
             printStream.println("!!! " + exception.getMessage());
@@ -68,7 +70,7 @@ public class HttpTelemetryPrinter implements TelemetryConsumer<HttpRequest, Http
         }
     }
 
-    public void printRequestDetails(HttpRequest request) {
+    public void printRequestDetails(@Nullable HttpRequest request) {
         if (request != null) {
             printHeaders(">>> ", request.getHeaders());
             if (request.isBodyPresent()) {
@@ -77,7 +79,7 @@ public class HttpTelemetryPrinter implements TelemetryConsumer<HttpRequest, Http
         }
     }
 
-    public void printResponseDetails(HttpResponse response) {
+    public void printResponseDetails(@Nullable HttpResponse response) {
         if (response != null) {
             printStream.println(response.getStatusCode());
             printHeaders("<<< ", response.getHeaders());
@@ -87,7 +89,7 @@ public class HttpTelemetryPrinter implements TelemetryConsumer<HttpRequest, Http
         }
     }
 
-    private void printHeaders(String prefix, Headers headers) {
+    private void printHeaders(@NonNull String prefix, @NonNull Headers headers) {
         for (Map.Entry<String, List<String>> values : headers) {
             for (String value : values.getValue()) {
                 printStream.println(prefix + values.getKey() + " := " + value);

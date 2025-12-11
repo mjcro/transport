@@ -5,19 +5,21 @@ import io.github.mjcro.interfaces.experimental.integration.TransportFactory;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpRequest;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpResponse;
 import io.github.mjcro.transport.options.Options;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Factory creating native Java HTTP transports.
  */
 public class NativeJavaTransportFactory implements TransportFactory<HttpRequest, HttpResponse> {
-    private final Option[] factoryOptions;
+    private final Option @Nullable [] factoryOptions;
 
     /**
      * Constructs new factory.
      *
      * @param factoryOptions Options to inject to every transport produced by this factory.
      */
-    public NativeJavaTransportFactory(Option... factoryOptions) {
+    public NativeJavaTransportFactory(Option @Nullable ... factoryOptions) {
         this.factoryOptions = factoryOptions;
     }
 
@@ -27,7 +29,8 @@ public class NativeJavaTransportFactory implements TransportFactory<HttpRequest,
      * @param options Additional options to pass to client being created.
      * @return Native Java HTTP transport.
      */
-    public NativeJavaTransport getTransport(Option... options) {
+    @Override
+    public @NonNull NativeJavaTransport getTransport(Option @Nullable ... options) {
         return new NativeJavaTransport(Options.merge(factoryOptions, options));
     }
 }

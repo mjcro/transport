@@ -1,5 +1,7 @@
 package io.github.mjcro.transport.caching;
 
+import org.jspecify.annotations.NonNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,12 +27,12 @@ public abstract class AbstractLocalFilesystemCache<Req, Res> implements Cache<Re
      *
      * @param basePath Base folder to store/read files.
      */
-    public AbstractLocalFilesystemCache(Path basePath) {
+    public AbstractLocalFilesystemCache(@NonNull Path basePath) {
         this.basePath = Objects.requireNonNull(basePath, "basePath");
     }
 
     @Override
-    public Optional<Res> get(Req request) {
+    public @NonNull Optional<Res> get(@NonNull Req request) {
         File file = getFile(request);
         if (file.exists() && file.canRead()) {
             return Optional.of(readFile(file));
@@ -38,8 +40,9 @@ public abstract class AbstractLocalFilesystemCache<Req, Res> implements Cache<Re
         return Optional.empty();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
-    public void put(Req request, Res response) {
+    public void put(@NonNull Req request, @NonNull Res response) {
         File file = getFile(request);
         if (file.isDirectory()) {
             throw new LocalFilesystemHttpCacheException(file + " is a directory");
@@ -65,7 +68,7 @@ public abstract class AbstractLocalFilesystemCache<Req, Res> implements Cache<Re
     /**
      * @return Base path for cache files.
      */
-    public Path getBasePath() {
+    public @NonNull Path getBasePath() {
         return basePath;
     }
 
@@ -76,7 +79,7 @@ public abstract class AbstractLocalFilesystemCache<Req, Res> implements Cache<Re
      * @param file File to read data from.
      * @return Response data.
      */
-    public Res readFile(File file) {
+    public @NonNull Res readFile(@NonNull File file) {
         try (FileInputStream is = new FileInputStream(file)) {
             return readResponse(is);
         } catch (IOException e) {
@@ -90,7 +93,8 @@ public abstract class AbstractLocalFilesystemCache<Req, Res> implements Cache<Re
      * @param request Request to find file for.
      * @return File for request.
      */
-    public File getFile(Req request) {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public @NonNull File getFile(@NonNull Req request) {
         String filename = resolveFilename(request);
         if (!getBasePath().toFile().exists()) {
             getBasePath().toFile().mkdirs();
@@ -107,7 +111,7 @@ public abstract class AbstractLocalFilesystemCache<Req, Res> implements Cache<Re
      * @param request Request.
      * @return File name.
      */
-    public abstract String resolveFilename(Req request);
+    public abstract @NonNull String resolveFilename(@NonNull Req request);
 
     /**
      * Reads response from given input stream.
@@ -116,7 +120,7 @@ public abstract class AbstractLocalFilesystemCache<Req, Res> implements Cache<Re
      * @return Response.
      * @throws IOException On IO or data processing error.
      */
-    public abstract Res readResponse(InputStream is) throws IOException;
+    public abstract @NonNull Res readResponse(@NonNull InputStream is) throws IOException;
 
     /**
      * Writes response to given output stream.
@@ -125,7 +129,7 @@ public abstract class AbstractLocalFilesystemCache<Req, Res> implements Cache<Re
      * @param response response to write.
      * @throws IOException On IO or data processing error.
      */
-    public abstract void writeResponse(OutputStream os, Res response) throws IOException;
+    public abstract void writeResponse(@NonNull OutputStream os, @NonNull Res response) throws IOException;
 
     /**
      * Runtime exception thrown on error occurred during local

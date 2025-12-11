@@ -2,6 +2,8 @@ package io.github.mjcro.transport.http;
 
 import io.github.mjcro.interfaces.experimental.integration.Headers;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpRequest;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -19,7 +21,7 @@ public class BasicHttpRequest extends BasicPacket implements HttpRequest {
      * @param url Request URL.
      * @return HTTP request instance.
      */
-    public static BasicHttpRequest get(String url) {
+    public static BasicHttpRequest get(@NonNull String url) {
         return new BasicHttpRequest(HttpRequest.GET, url, null, null);
     }
 
@@ -30,7 +32,7 @@ public class BasicHttpRequest extends BasicPacket implements HttpRequest {
      * @param headers Headers, optional, nullable.
      * @return HTTP request instance.
      */
-    public static BasicHttpRequest get(String url, Headers headers) {
+    public static BasicHttpRequest get(@NonNull String url, @Nullable Headers headers) {
         return new BasicHttpRequest(HttpRequest.GET, url, headers, null);
     }
 
@@ -42,19 +44,24 @@ public class BasicHttpRequest extends BasicPacket implements HttpRequest {
      * @param headers Headers, optional, nullable.
      * @param body    Body, optional, nullable.
      */
-    public BasicHttpRequest(String method, String url, Headers headers, byte[] body) {
+    public BasicHttpRequest(
+            @NonNull String method,
+            @NonNull String url,
+            @Nullable Headers headers,
+            byte @Nullable [] body
+    ) {
         super(headers, body);
         this.method = Objects.requireNonNull(method, "method");
         this.url = Objects.requireNonNull(url, "url");
     }
 
     @Override
-    public String getMethod() {
+    public @NonNull String getMethod() {
         return method;
     }
 
     @Override
-    public String getURL() {
+    public @NonNull String getURL() {
         return url;
     }
 }

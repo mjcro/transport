@@ -2,6 +2,8 @@ package io.github.mjcro.transport.http;
 
 import io.github.mjcro.interfaces.experimental.integration.Headers;
 import io.github.mjcro.interfaces.experimental.integration.Packet;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 
@@ -22,18 +24,18 @@ public class BasicPacket implements Packet {
      * @param headers Headers, optional, nullable.
      * @param body    Body, optional, nullable.
      */
-    public BasicPacket(Headers headers, byte[] body) {
+    public BasicPacket(@Nullable Headers headers, byte @Nullable [] body) {
         this.headers = headers == null || headers.isEmpty() ? EMPTY_HEADERS : headers;
         this.body = body == null || body.length == 0 ? EMPTY_BODY : body;
     }
 
     @Override
-    public Headers getHeaders() {
+    public @NonNull Headers getHeaders() {
         return headers;
     }
 
     @Override
-    public byte[] getBody() {
+    public byte @NonNull [] getBody() {
         return body;
     }
 }

@@ -1,6 +1,8 @@
 package io.github.mjcro.transport.http;
 
 import io.github.mjcro.interfaces.experimental.integration.Headers;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +23,7 @@ public class BasicHeaders implements Headers {
      *
      * @param data Source data map, optional, nullable.
      */
-    public BasicHeaders(Map<String, List<String>> data) {
+    public BasicHeaders(@Nullable Map<String, List<String>> data) {
         this.data = data == null || data.isEmpty() ? Map.of() : new HashMap<>(data);
     }
 
@@ -33,7 +35,7 @@ public class BasicHeaders implements Headers {
     }
 
     @Override
-    public List<String> get(String s) {
+    public @NonNull List<String> get(@Nullable String s) {
         ArrayList<String> values = new ArrayList<>();
         for (Map.Entry<String, List<String>> entry : this) {
             if (entry.getKey().equalsIgnoreCase(s)) {
@@ -49,7 +51,7 @@ public class BasicHeaders implements Headers {
     }
 
     @Override
-    public Iterator<Map.Entry<String, List<String>>> iterator() {
+    public @NonNull Iterator<Map.Entry<String, List<String>>> iterator() {
         return data.entrySet().iterator();
     }
 }

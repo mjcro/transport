@@ -1,5 +1,7 @@
 package io.github.mjcro.transport.caching;
 
+import org.jspecify.annotations.NonNull;
+
 import java.util.Optional;
 
 /**
@@ -15,7 +17,7 @@ public interface Cache<Req, Res> {
      * @param request Transport request.
      * @return Cached response, if any.
      */
-    Optional<Res> get(Req request);
+    @NonNull Optional<Res> get(@NonNull Req request);
 
     /**
      * Places response into cache and associates it with request.
@@ -23,5 +25,5 @@ public interface Cache<Req, Res> {
      * @param request  Request to associate response with.
      * @param response Response to cache.
      */
-    void put(Req request, Res response);
+    void put(@NonNull Req request, @NonNull Res response);
 }

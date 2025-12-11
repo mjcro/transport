@@ -5,6 +5,8 @@ import io.github.mjcro.interfaces.durations.WithElapsed;
 import io.github.mjcro.interfaces.experimental.integration.Packet;
 import io.github.mjcro.interfaces.experimental.integration.Telemetry;
 import io.github.mjcro.interfaces.experimental.integration.TelemetryConsumer;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.time.temporal.Temporal;
 
@@ -35,7 +37,7 @@ public class FailSafeTelemetryConsumerDecorator<Req extends Packet, Res extends 
      * @return Telemetry consumer suppressing any exception.
      */
     public static <Req extends Packet, Res extends Packet & WithElapsed, Meta, T extends Temporal> TelemetryConsumer<Req, Res, Meta, T> wrap(
-            TelemetryConsumer<Req, Res, Meta, T> consumer,
+            @Nullable TelemetryConsumer<Req, Res, Meta, T> consumer,
             boolean printStackTrace
     ) {
         if (consumer == null) {
@@ -47,18 +49,22 @@ public class FailSafeTelemetryConsumerDecorator<Req extends Packet, Res extends 
         return new FailSafeTelemetryConsumerDecorator<>(consumer, printStackTrace);
     }
 
-    private FailSafeTelemetryConsumerDecorator(TelemetryConsumer<Req, Res, Meta, T> decorated, boolean printStackTrace) {
+    private FailSafeTelemetryConsumerDecorator(
+            @NonNull TelemetryConsumer<Req, Res, Meta, T> decorated,
+            boolean printStackTrace
+    ) {
         this.decorated = decorated;
         this.printStackTrace = printStackTrace;
     }
 
     @Override
-    public TelemetryConsumer<Req, Res, Meta, T> getDecorated() {
+    public @NonNull TelemetryConsumer<Req, Res, Meta, T> getDecorated() {
         return decorated;
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     @Override
-    public void accept(Telemetry<? extends Req, ? extends Res, ? extends Meta, ? extends T> telemetry) {
+    public void accept(@Nullable Telemetry<? extends Req, ? extends Res, ? extends Meta, ? extends T> telemetry) {
         if (telemetry != null) {
             try {
                 getDecorated().accept(telemetry);

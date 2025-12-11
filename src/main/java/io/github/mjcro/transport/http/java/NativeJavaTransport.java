@@ -12,6 +12,8 @@ import io.github.mjcro.transport.http.java.options.HttpClientBuilderOption;
 import io.github.mjcro.transport.http.java.options.HttpRequestBuilderOption;
 import io.github.mjcro.transport.http.java.options.HttpTelemetryOption;
 import io.github.mjcro.transport.http.options.HttpResponseConsumerOption;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,19 +29,19 @@ import java.util.Optional;
  * Transport implementation over Java 11 native HTTP client.
  */
 public class NativeJavaTransport implements HttpTransport {
-    private final Option[] defaultOptions;
+    private final Option @Nullable [] defaultOptions;
 
     /**
      * Constructs new native Java transport.
      *
      * @param options Default transport options.
      */
-    public NativeJavaTransport(Option... options) {
+    public NativeJavaTransport(Option @Nullable ... options) {
         this.defaultOptions = options;
     }
 
     @Override
-    public HttpResponse send(HttpRequest request, Option... options) {
+    public @NonNull HttpResponse send(@NonNull HttpRequest request, Option @Nullable ... options) {
         ArrayList<HttpTelemetryOption<?>> telemetryReceivers = new ArrayList<>();
         telemetryReceivers.addAll(getTelemetryReceivers(defaultOptions));
         telemetryReceivers.addAll(getTelemetryReceivers(options));
@@ -105,7 +107,7 @@ public class NativeJavaTransport implements HttpTransport {
      * @param options Options to apply, nullable.
      * @return HTTP request builder.
      */
-    private java.net.http.HttpRequest.Builder applyRequestOptions(java.net.http.HttpRequest.Builder b, Option[] options) {
+    private java.net.http.HttpRequest.@NonNull Builder applyRequestOptions(java.net.http.HttpRequest.@NonNull Builder b, Option @Nullable [] options) {
         if (options != null) {
             for (Option option : options) {
                 Optional<HttpRequestBuilderOption> wrapped = HttpRequestBuilderOption.wrap(option);
@@ -124,7 +126,7 @@ public class NativeJavaTransport implements HttpTransport {
      * @param options Options to apply, nullable.
      * @return HTTP client builder.
      */
-    private java.net.http.HttpClient.Builder applyClientOptions(java.net.http.HttpClient.Builder b, Option[] options) {
+    private java.net.http.HttpClient.@NonNull Builder applyClientOptions(java.net.http.HttpClient.@NonNull Builder b, Option @Nullable [] options) {
         if (options != null) {
             for (Option option : options) {
                 Optional<HttpClientBuilderOption> wrapped = HttpClientBuilderOption.wrap(option);
@@ -142,7 +144,7 @@ public class NativeJavaTransport implements HttpTransport {
      * @param options Options to fetch data from, nullable.
      * @return Found telemetry options.
      */
-    private List<HttpTelemetryOption<?>> getTelemetryReceivers(Option[] options) {
+    private @NonNull List<HttpTelemetryOption<?>> getTelemetryReceivers(Option @Nullable [] options) {
         ArrayList<HttpTelemetryOption<?>> telemetryReceivers = new ArrayList<>();
         if (options != null) {
             for (Option option : options) {
@@ -160,7 +162,7 @@ public class NativeJavaTransport implements HttpTransport {
      * @param request Source request.
      * @return HTTP request builder.
      */
-    private java.net.http.HttpRequest.Builder createRequestBuilder(HttpRequest request) {
+    private java.net.http.HttpRequest.@NonNull Builder createRequestBuilder(@NonNull HttpRequest request) {
         java.net.http.HttpRequest.Builder b = java.net.http.HttpRequest.newBuilder();
         if (request.getMethod().equalsIgnoreCase("get")) {
             b = b.GET();
@@ -178,7 +180,7 @@ public class NativeJavaTransport implements HttpTransport {
      * @param source        Original HTTP request.
      * @return New HTTP request build using data from Java 11 native request.
      */
-    private HttpRequest rebuildRequest(java.net.http.HttpRequest nativeRequest, HttpRequest source) {
+    private @NonNull HttpRequest rebuildRequest(java.net.http.@NonNull HttpRequest nativeRequest, @NonNull HttpRequest source) {
         return new BasicHttpRequest(
                 nativeRequest.method(),
                 nativeRequest.uri().toString(),
@@ -226,7 +228,7 @@ public class NativeJavaTransport implements HttpTransport {
      * @param response Response to apply consumers on.
      * @param options  Options to extract consumers from.
      */
-    private void applyResponseConsumers(HttpResponse response, Option[] options) {
+    private void applyResponseConsumers(@NonNull HttpResponse response, Option @Nullable [] options) {
         if (options != null) {
             for (Option option : options) {
                 if (option instanceof HttpResponseConsumerOption) {

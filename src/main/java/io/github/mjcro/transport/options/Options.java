@@ -1,6 +1,7 @@
 package io.github.mjcro.transport.options;
 
 import io.github.mjcro.interfaces.experimental.integration.Option;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +17,7 @@ public class Options {
      * @param b Options array.
      * @return resulting array.
      */
-    public static Option[] merge(Option[] a, Option[] b) {
+    public static Option @Nullable [] merge(Option @Nullable [] a, Option @Nullable [] b) {
         if ((a == null || a.length == 0) && (b == null || b.length == 0)) {
             // Both empty
             return new Option[0];

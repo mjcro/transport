@@ -5,6 +5,8 @@ import io.github.mjcro.interfaces.experimental.integration.Option;
 import io.github.mjcro.interfaces.experimental.integration.Transport;
 import io.github.mjcro.transport.options.CachingMode;
 import io.github.mjcro.transport.options.Options;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -18,7 +20,7 @@ import java.util.Optional;
 public class CachingTransportDecorator<Req, Res> implements Transport<Req, Res>, Decorator<Transport<Req, Res>> {
     private final Cache<Req, Res> cache;
     private final Transport<Req, Res> decorated;
-    private final Option[] defaultOptions;
+    private final Option @Nullable [] defaultOptions;
 
     /**
      * Construct new caching decorator.
@@ -27,19 +29,23 @@ public class CachingTransportDecorator<Req, Res> implements Transport<Req, Res>,
      * @param decorated      Transport being decorated.
      * @param defaultOptions Default transport options to inject.
      */
-    public CachingTransportDecorator(Cache<Req, Res> cache, Transport<Req, Res> decorated, Option... defaultOptions) {
+    public CachingTransportDecorator(
+            @NonNull Cache<Req, Res> cache,
+            @NonNull Transport<Req, Res> decorated,
+            Option @Nullable ... defaultOptions
+    ) {
         this.cache = Objects.requireNonNull(cache, "cache");
         this.decorated = Objects.requireNonNull(decorated, "decorated");
         this.defaultOptions = defaultOptions;
     }
 
     @Override
-    public Transport<Req, Res> getDecorated() {
+    public @NonNull Transport<Req, Res> getDecorated() {
         return decorated;
     }
 
     @Override
-    public Res send(Req request, Option... options0) {
+    public @NonNull Res send(@NonNull Req request, Option @Nullable ... options0) {
         Option[] options = Options.merge(this.defaultOptions, options0);
         CachingMode mode = readCachingMode(options);
         if (mode == CachingMode.ENABLED) {
@@ -64,7 +70,7 @@ public class CachingTransportDecorator<Req, Res> implements Transport<Req, Res>,
      * @param options Options to get data from.
      * @return Caching mode from options or default.
      */
-    private CachingMode readCachingMode(Option[] options) {
+    private @NonNull CachingMode readCachingMode(Option @Nullable [] options) {
         CachingMode mode = CachingMode.ENABLED;
         if (options != null) {
             for (Option option : options) {

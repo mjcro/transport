@@ -2,6 +2,8 @@ package io.github.mjcro.transport.http;
 
 import io.github.mjcro.interfaces.experimental.integration.Headers;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpResponse;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -25,7 +27,13 @@ public class BasicHttpResponse extends BasicPacket implements HttpResponse {
      * @param headers Headers, optional, nullable.
      * @param body    Body, optional, nullable.
      */
-    public BasicHttpResponse(int code, Duration elapsed, String url, Headers headers, byte[] body) {
+    public BasicHttpResponse(
+            int code,
+            @NonNull Duration elapsed,
+            @NonNull String url,
+            @Nullable Headers headers,
+            byte @Nullable [] body
+    ) {
         super(headers, body);
         this.statusCode = code;
         this.elapsed = Objects.requireNonNull(elapsed, "elapsed");
@@ -38,12 +46,12 @@ public class BasicHttpResponse extends BasicPacket implements HttpResponse {
     }
 
     @Override
-    public Duration getElapsed() {
+    public @NonNull Duration getElapsed() {
         return elapsed;
     }
 
     @Override
-    public String getURL() {
+    public @NonNull String getURL() {
         return url;
     }
 }

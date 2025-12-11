@@ -1,12 +1,14 @@
 package io.github.mjcro.transport.http.java.options;
 
+import org.jspecify.annotations.NonNull;
+
 import java.net.http.HttpClient;
 import java.util.Objects;
 
 public class FollowRedirects implements HttpClientBuilderOption {
     private final HttpClient.Redirect mode;
 
-    public FollowRedirects(HttpClient.Redirect mode) {
+    public FollowRedirects(HttpClient.@NonNull Redirect mode) {
         this.mode = Objects.requireNonNull(mode, "mode");
     }
 
@@ -15,7 +17,7 @@ public class FollowRedirects implements HttpClientBuilderOption {
     }
 
     @Override
-    public HttpClient.Builder apply(HttpClient.Builder b) {
+    public HttpClient.Builder apply(HttpClient.@NonNull Builder b) {
         return b.followRedirects(mode);
     }
 }

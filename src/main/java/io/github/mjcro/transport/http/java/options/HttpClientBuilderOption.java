@@ -1,6 +1,8 @@
 package io.github.mjcro.transport.http.java.options;
 
 import io.github.mjcro.interfaces.experimental.integration.Option;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.net.http.HttpClient;
 import java.util.Optional;
@@ -16,7 +18,7 @@ public interface HttpClientBuilderOption extends UnaryOperator<HttpClient.Builde
      * @param o Option to wrap.
      * @return Wrapped option, if any.
      */
-    static Optional<HttpClientBuilderOption> wrap(Option o) {
+    static @NonNull Optional<HttpClientBuilderOption> wrap(@Nullable Option o) {
         if (o instanceof HttpClientBuilderOption) {
             return Optional.of((HttpClientBuilderOption) o);
         }

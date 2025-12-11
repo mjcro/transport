@@ -8,5 +8,5 @@ import io.github.mjcro.interfaces.experimental.integration.Option;
 public enum CachingMode implements Option {
     DISABLE, // No caching
     UPDATE,  // No cache read but cache write enabled
-    ENABLED; // Cache enabled
+    ENABLED  // Cache enabled
 }

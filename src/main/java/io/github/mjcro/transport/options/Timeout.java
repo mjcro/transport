@@ -1,6 +1,8 @@
 package io.github.mjcro.transport.options;
 
 import io.github.mjcro.interfaces.experimental.integration.Option;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
 
@@ -15,11 +17,11 @@ public class Timeout implements Option {
      *
      * @param duration Timeout duration, optional.
      */
-    public Timeout(Duration duration) {
+    public Timeout(@Nullable Duration duration) {
         this.duration = duration == null ? Duration.ZERO : duration;
     }
 
-    public Duration getDuration() {
+    public @NonNull Duration getDuration() {
         return duration;
     }
 }

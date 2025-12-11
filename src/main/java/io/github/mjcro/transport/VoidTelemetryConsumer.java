@@ -4,6 +4,7 @@ import io.github.mjcro.interfaces.durations.WithElapsed;
 import io.github.mjcro.interfaces.experimental.integration.Packet;
 import io.github.mjcro.interfaces.experimental.integration.Telemetry;
 import io.github.mjcro.interfaces.experimental.integration.TelemetryConsumer;
+import org.jspecify.annotations.Nullable;
 
 import java.time.temporal.Temporal;
 
@@ -13,7 +14,7 @@ import java.time.temporal.Temporal;
 public class VoidTelemetryConsumer<Req extends Packet, Res extends Packet & WithElapsed, Meta, T extends Temporal>
         implements TelemetryConsumer<Req, Res, Meta, T> {
     @Override
-    public void accept(final Telemetry<? extends Req, ? extends Res, ? extends Meta, ? extends T> telemetry) {
+    public void accept(@Nullable Telemetry<? extends Req, ? extends Res, ? extends Meta, ? extends T> telemetry) {
         // Do nothing
     }
 }

@@ -2,6 +2,8 @@ package io.github.mjcro.transport.http.java.options;
 
 import io.github.mjcro.interfaces.experimental.integration.Option;
 import io.github.mjcro.transport.options.Timeout;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.net.http.HttpRequest;
 import java.util.Optional;
@@ -17,7 +19,7 @@ public interface HttpRequestBuilderOption extends UnaryOperator<HttpRequest.Buil
      * @param o Option to wrap.
      * @return Wrapped option, if any.
      */
-    static Optional<HttpRequestBuilderOption> wrap(Option o) {
+    static @NonNull Optional<HttpRequestBuilderOption> wrap(@Nullable Option o) {
         if (o instanceof HttpRequestBuilderOption) {
             return Optional.of((HttpRequestBuilderOption) o);
         } else if (o instanceof Timeout) {

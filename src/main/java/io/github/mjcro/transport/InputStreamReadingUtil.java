@@ -2,6 +2,8 @@ package io.github.mjcro.transport;
 
 import org.apache.commons.compress.compressors.brotli.BrotliCompressorInputStream;
 import org.apache.commons.compress.compressors.deflate.DeflateCompressorInputStream;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +19,7 @@ public class InputStreamReadingUtil {
      * @return Data from input stream.
      * @throws IOException On any IO error.
      */
-    public static byte[] readAll(InputStream is) throws IOException {
+    public static byte @NonNull [] readAll(@Nullable InputStream is) throws IOException {
         if (is == null) {
             return new byte[0];
         }
@@ -34,7 +36,7 @@ public class InputStreamReadingUtil {
      * @return Data from input stream.
      * @throws IOException On any IO error.
      */
-    public static byte[] readAllGzip(InputStream is) throws IOException {
+    public static byte @NonNull [] readAllGzip(@Nullable InputStream is) throws IOException {
         return readAll(is == null ? null : new GZIPInputStream(is));
     }
 
@@ -46,7 +48,7 @@ public class InputStreamReadingUtil {
      * @return Data from input stream.
      * @throws IOException On any IO error.
      */
-    public static byte[] readAllDeflate(InputStream is) throws IOException {
+    public static byte @NonNull [] readAllDeflate(@Nullable InputStream is) throws IOException {
         return readAll(is == null ? null : new DeflateCompressorInputStream(is));
     }
 
@@ -58,7 +60,7 @@ public class InputStreamReadingUtil {
      * @return Data from input stream.
      * @throws IOException On any IO error.
      */
-    public static byte[] readAllBrotli(InputStream is) throws IOException {
+    public static byte @NonNull [] readAllBrotli(@Nullable InputStream is) throws IOException {
         return readAll(is == null ? null : new BrotliCompressorInputStream(is));
     }
 
@@ -71,7 +73,10 @@ public class InputStreamReadingUtil {
      * @return Data from input stream.
      * @throws IOException On any IO error or if content encoding is not supported.
      */
-    public static byte[] readAllUsingContentEncoding(InputStream is, String contentEncoding) throws IOException {
+    public static byte @NonNull [] readAllUsingContentEncoding(
+            @Nullable InputStream is,
+            @Nullable String contentEncoding
+    ) throws IOException {
         if (is == null) {
             return readAll(null);
         }
@@ -95,7 +100,7 @@ public class InputStreamReadingUtil {
     }
 
     public static final class UnsupportedContentEncodingException extends IOException {
-        private UnsupportedContentEncodingException(String contentEncoding) {
+        private UnsupportedContentEncodingException(@Nullable String contentEncoding) {
             super("Unsupported content encoding " + contentEncoding);
         }
     }

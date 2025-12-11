@@ -4,6 +4,7 @@ import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpReque
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpResponse;
 import io.github.mjcro.transport.http.BasicHeaders;
 import io.github.mjcro.transport.http.BasicHttpResponse;
+import org.jspecify.annotations.NonNull;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,7 +30,7 @@ public class LocalFilesystemHttpCache extends AbstractLocalFilesystemCache<HttpR
      *
      * @param basePath Base path to store files.
      */
-    public LocalFilesystemHttpCache(Path basePath) {
+    public LocalFilesystemHttpCache(@NonNull Path basePath) {
         super(basePath);
     }
 
@@ -38,13 +39,13 @@ public class LocalFilesystemHttpCache extends AbstractLocalFilesystemCache<HttpR
      *
      * @param basePath Base path to store files.
      */
-    public LocalFilesystemHttpCache(String basePath) {
+    public LocalFilesystemHttpCache(@NonNull String basePath) {
         this(Path.of(basePath));
     }
 
     @Override
-    public void writeResponse(OutputStream os, HttpResponse response) {
-        try (PrintWriter w = new PrintWriter(os)) {
+    public void writeResponse(@NonNull OutputStream os, @NonNull HttpResponse response) {
+        try (PrintWriter w = new PrintWriter(os, false, StandardCharsets.UTF_8)) {
             w.println(0x01); // Version
             w.println(response.getStatusCode());
             w.println(response.getElapsedNanos());
@@ -62,8 +63,8 @@ public class LocalFilesystemHttpCache extends AbstractLocalFilesystemCache<HttpR
     }
 
     @Override
-    public HttpResponse readResponse(InputStream is) {
-        Scanner scanner = new Scanner(is);
+    public @NonNull HttpResponse readResponse(@NonNull InputStream is) {
+        Scanner scanner = new Scanner(is, StandardCharsets.UTF_8);
         scanner.useDelimiter(nl);
         int version = scanner.nextInt();
         if (version != 0x01) {
@@ -87,7 +88,7 @@ public class LocalFilesystemHttpCache extends AbstractLocalFilesystemCache<HttpR
     }
 
     @Override
-    public String resolveFilename(HttpRequest request) {
+    public @NonNull String resolveFilename(@NonNull HttpRequest request) {
         String url = request.getURL().toLowerCase(Locale.ROOT);
         if (url.startsWith("https://")) {
             url = url.substring(8);
