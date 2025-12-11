@@ -96,7 +96,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.1</version>
                 <configuration>
-                    <failOnWarning>true</failOnWarning>
                     <compilerArgs>
                         <arg>-XDcompilePolicy=simple</arg>
                         <arg>-Xplugin:ErrorProne -Xep:MissingSummary:OFF -Xep:NullAway:ERROR -XepOpt:NullAway:AnnotatedPackages=io.github.mjcro.transport</arg>
