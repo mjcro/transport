@@ -6,10 +6,10 @@ import java.net.http.HttpRequest;
 import java.time.Duration;
 import java.util.Objects;
 
-public class TimeoutOption implements HttpRequestBuilderOption {
+public class TimeoutNativeJavaOption implements HttpRequestBuilderNativeJavaOption {
     private final Duration timeout;
 
-    public TimeoutOption(@NonNull Duration timeout) {
+    public TimeoutNativeJavaOption(@NonNull Duration timeout) {
         this.timeout = Objects.requireNonNull(timeout, "timeout");
     }
 

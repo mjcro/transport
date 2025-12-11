@@ -14,11 +14,11 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class HttpTelemetryOption<Meta> implements Option {
+public class HttpTelemetryNativeJavaOption<Meta> implements Option {
     private final Consumer<? super Telemetry<HttpRequest, HttpResponse, Meta, Instant>> consumer;
     private final Supplier<Meta> metaSupplier;
 
-    public HttpTelemetryOption(
+    public HttpTelemetryNativeJavaOption(
             @NonNull Consumer<? super Telemetry<HttpRequest, HttpResponse, Meta, Instant>> consumer,
             @NonNull Supplier<Meta> metaSupplier
     ) {

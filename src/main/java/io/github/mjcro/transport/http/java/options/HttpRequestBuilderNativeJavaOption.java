@@ -12,18 +12,18 @@ import java.util.function.UnaryOperator;
 /**
  * Defines options that can change state of {@link HttpRequest.Builder}.
  */
-public interface HttpRequestBuilderOption extends UnaryOperator<HttpRequest.Builder>, Option {
+public interface HttpRequestBuilderNativeJavaOption extends UnaryOperator<HttpRequest.Builder>, Option {
     /**
-     * Attempts to wrap given {@link Option} to {@link HttpRequestBuilderOption}.
+     * Attempts to wrap given {@link Option} to {@link HttpRequestBuilderNativeJavaOption}.
      *
      * @param o Option to wrap.
      * @return Wrapped option, if any.
      */
-    static @NonNull Optional<HttpRequestBuilderOption> wrap(@Nullable Option o) {
-        if (o instanceof HttpRequestBuilderOption) {
-            return Optional.of((HttpRequestBuilderOption) o);
+    static @NonNull Optional<HttpRequestBuilderNativeJavaOption> wrap(@Nullable Option o) {
+        if (o instanceof HttpRequestBuilderNativeJavaOption) {
+            return Optional.of((HttpRequestBuilderNativeJavaOption) o);
         } else if (o instanceof Timeout) {
-            return Optional.of(new TimeoutOption(((Timeout) o).getDuration()));
+            return Optional.of(new TimeoutNativeJavaOption(((Timeout) o).getDuration()));
         }
 
         return Optional.empty();

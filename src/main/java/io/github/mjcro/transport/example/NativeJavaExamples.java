@@ -9,20 +9,20 @@ import io.github.mjcro.transport.caching.LocalFilesystemHttpCache;
 import io.github.mjcro.transport.http.BasicHttpRequest;
 import io.github.mjcro.transport.http.HttpTelemetryPrinter;
 import io.github.mjcro.transport.http.java.NativeJavaTransportFactory;
-import io.github.mjcro.transport.http.java.options.HeaderOption;
-import io.github.mjcro.transport.http.java.options.HttpTelemetryOption;
-import io.github.mjcro.transport.http.java.options.HttpVersion2Option;
+import io.github.mjcro.transport.http.java.options.HeaderNativeJavaOption;
+import io.github.mjcro.transport.http.java.options.HttpTelemetryNativeJavaOption;
+import io.github.mjcro.transport.http.java.options.HttpVersion2NativeJavaOption;
 
 public class NativeJavaExamples {
     public static void main(String[] args) {
         TransportFactory<HttpRequest, HttpResponse> factory = new NativeJavaTransportFactory(
-                new HttpTelemetryOption<>(new HttpTelemetryPrinter(true), () -> null),
-                new HttpVersion2Option(),
-                HeaderOption.accept("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
-                HeaderOption.acceptEncoding(),
-                HeaderOption.acceptLanguage("uk-UA,en-US;q=0.8,en;q=0.6,uk;q=0.4,ru;q=0.2"),
-                HeaderOption.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0"),
-                HeaderOption.cacheControl("no-cache")
+                new HttpTelemetryNativeJavaOption<>(new HttpTelemetryPrinter(true), () -> null),
+                new HttpVersion2NativeJavaOption(),
+                HeaderNativeJavaOption.accept("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
+                HeaderNativeJavaOption.acceptEncoding(),
+                HeaderNativeJavaOption.acceptLanguage("uk-UA,en-US;q=0.8,en;q=0.6,uk;q=0.4,ru;q=0.2"),
+                HeaderNativeJavaOption.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0"),
+                HeaderNativeJavaOption.cacheControl("no-cache")
         );
 
         factory = new CachingTransportDecoratorFactory<>(

@@ -5,14 +5,14 @@ import org.jspecify.annotations.NonNull;
 import java.net.http.HttpClient;
 import java.util.Objects;
 
-public class FollowRedirects implements HttpClientBuilderOption {
+public class FollowRedirectsNativeJavaOption implements HttpClientBuilderNativeJavaOption {
     private final HttpClient.Redirect mode;
 
-    public FollowRedirects(HttpClient.@NonNull Redirect mode) {
+    public FollowRedirectsNativeJavaOption(HttpClient.@NonNull Redirect mode) {
         this.mode = Objects.requireNonNull(mode, "mode");
     }
 
-    public FollowRedirects() {
+    public FollowRedirectsNativeJavaOption() {
         this(HttpClient.Redirect.ALWAYS);
     }
 
