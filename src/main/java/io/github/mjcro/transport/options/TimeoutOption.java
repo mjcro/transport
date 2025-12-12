@@ -9,7 +9,7 @@ import java.time.Duration;
 /**
  * Timeout option.
  */
-public class Timeout implements Option {
+public class TimeoutOption implements Option {
     private final Duration duration;
 
     /**
@@ -17,7 +17,7 @@ public class Timeout implements Option {
      *
      * @param duration Timeout duration, optional.
      */
-    public Timeout(@Nullable Duration duration) {
+    public TimeoutOption(@Nullable Duration duration) {
         this.duration = duration == null ? Duration.ZERO : duration;
     }
 

@@ -5,7 +5,7 @@ import io.github.mjcro.interfaces.experimental.integration.TransportFactory;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpRequest;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpResponse;
 import io.github.mjcro.transport.caching.CachingTransportDecoratorFactory;
-import io.github.mjcro.transport.caching.LocalFilesystemHttpCache;
+import io.github.mjcro.transport.http.LocalFilesystemHttpCachingDecorator;
 import io.github.mjcro.transport.http.BasicHttpRequest;
 import io.github.mjcro.transport.http.HttpTelemetryPrinter;
 import io.github.mjcro.transport.http.java.NativeJavaTransportFactory;
@@ -26,7 +26,7 @@ public class NativeJavaExamples {
         );
 
         factory = new CachingTransportDecoratorFactory<>(
-                new LocalFilesystemHttpCache("dev/cache"),
+                new LocalFilesystemHttpCachingDecorator("dev/cache"),
                 factory
         );
 

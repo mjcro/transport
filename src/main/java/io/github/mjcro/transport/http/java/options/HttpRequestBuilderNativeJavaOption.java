@@ -1,7 +1,7 @@
 package io.github.mjcro.transport.http.java.options;
 
 import io.github.mjcro.interfaces.experimental.integration.Option;
-import io.github.mjcro.transport.options.Timeout;
+import io.github.mjcro.transport.options.TimeoutOption;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -22,8 +22,8 @@ public interface HttpRequestBuilderNativeJavaOption extends UnaryOperator<HttpRe
     static @NonNull Optional<HttpRequestBuilderNativeJavaOption> transform(@Nullable Option o) {
         if (o instanceof HttpRequestBuilderNativeJavaOption) {
             return Optional.of((HttpRequestBuilderNativeJavaOption) o);
-        } else if (o instanceof Timeout) {
-            return Optional.of(new TimeoutNativeJavaOption(((Timeout) o).getDuration()));
+        } else if (o instanceof TimeoutOption) {
+            return Optional.of(new TimeoutNativeJavaOption(((TimeoutOption) o).getDuration()));
         }
 
         return Optional.empty();

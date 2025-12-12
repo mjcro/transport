@@ -136,11 +136,11 @@ public abstract class AbstractLocalFilesystemCache<Req, Res> implements Cache<Re
      * filesystem cache processing.
      */
     public static class LocalFilesystemHttpCacheException extends RuntimeException {
-        LocalFilesystemHttpCacheException(IOException cause) {
+        public LocalFilesystemHttpCacheException(@NonNull IOException cause) {
             super(cause);
         }
 
-        LocalFilesystemHttpCacheException(String message) {
+        public LocalFilesystemHttpCacheException(@NonNull String message) {
             super(message);
         }
     }

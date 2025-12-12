@@ -1,9 +1,8 @@
-package io.github.mjcro.transport.caching;
+package io.github.mjcro.transport.http;
 
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpRequest;
 import io.github.mjcro.interfaces.experimental.integration.http.simple.HttpResponse;
-import io.github.mjcro.transport.http.BasicHeaders;
-import io.github.mjcro.transport.http.BasicHttpResponse;
+import io.github.mjcro.transport.caching.AbstractLocalFilesystemCache;
 import org.jspecify.annotations.NonNull;
 
 import java.io.InputStream;
@@ -22,7 +21,7 @@ import java.util.Scanner;
 /**
  * Local filesystem cache implementation for HTTP transport.
  */
-public class LocalFilesystemHttpCache extends AbstractLocalFilesystemCache<HttpRequest, HttpResponse> {
+public class LocalFilesystemHttpCachingDecorator extends AbstractLocalFilesystemCache<HttpRequest, HttpResponse> {
     private final String nl = System.lineSeparator();
 
     /**
@@ -30,7 +29,7 @@ public class LocalFilesystemHttpCache extends AbstractLocalFilesystemCache<HttpR
      *
      * @param basePath Base path to store files.
      */
-    public LocalFilesystemHttpCache(@NonNull Path basePath) {
+    public LocalFilesystemHttpCachingDecorator(@NonNull Path basePath) {
         super(basePath);
     }
 
@@ -39,7 +38,7 @@ public class LocalFilesystemHttpCache extends AbstractLocalFilesystemCache<HttpR
      *
      * @param basePath Base path to store files.
      */
-    public LocalFilesystemHttpCache(@NonNull String basePath) {
+    public LocalFilesystemHttpCachingDecorator(@NonNull String basePath) {
         this(Path.of(basePath));
     }
 
